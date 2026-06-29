@@ -15,10 +15,10 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 
   <!-- 主题色 -->
-  <meta name="theme-color" content="#2563EB">
+  <meta name="theme-color" content="#FAFAFA">
   <meta name="mobile-web-app-capable" content="yes">
 
-  <!-- Google Fonts: Archivo + Space Grotesk (preconnect for performance) -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -26,65 +26,21 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- 侧边栏导航 -->
-  <aside class="sidebar" id="sidebar">
-    <div class="sidebar-brand">
-      <div class="avatar avatar-lg" id="sidebarAvatar">👤</div>
-      <h3 id="sidebarName">我的空间</h3>
+
+  <!-- ====== 顶部导航栏 ====== -->
+  <header class="app-header" id="appHeader">
+    <div class="header-left">
+      <div class="avatar avatar-sm" id="headerAvatar">👤</div>
+      <span class="header-title" id="headerTitle">个人空间</span>
     </div>
-    <nav class="sidebar-nav">
-      <button class="nav-item active" data-tab="profile">
-        <span class="nav-icon">👤</span> 个人资料
-      </button>
-      <button class="nav-item" data-tab="memo">
-        <span class="nav-icon">📝</span> 备忘录
-      </button>
-      <button class="nav-item" data-tab="accounting">
-        <span class="nav-icon">💰</span> 记账本
-      </button>
-    </nav>
+    <button class="theme-btn" id="themeBtn" title="切换日间/夜间模式" aria-label="切换日间夜间模式">🌙</button>
+  </header>
 
-    <!-- 日夜模式切换（侧边栏内） -->
-    <button class="theme-toggle-sidebar" id="themeToggleSidebar" title="切换日间/夜间模式">
-      <span class="theme-icon">🌙</span> 夜间模式
-    </button>
-  </aside>
-
-  <!-- 侧边栏折叠/展开按钮 -->
-  <button class="sidebar-toggle" id="sidebarToggle" title="收起菜单" aria-label="收起侧边栏菜单">◀</button>
-
-  <!-- 移动端：侧边栏遮罩 -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-  <!-- 移动端：汉堡菜单按钮 -->
-  <button class="mobile-menu-btn" id="mobileMenuBtn" title="菜单" aria-label="打开导航菜单">☰</button>
-
-  <!-- 移动端：日夜模式切换 -->
-  <button class="theme-toggle-mobile" id="themeToggleMobile" title="切换日间/夜间模式" aria-label="切换日间夜间模式">🌙</button>
-
-  <!-- 移动端：底部导航栏 -->
-  <nav class="bottom-tabs" id="bottomTabs">
-    <button class="bottom-tab active" data-tab="profile">
-      <span class="bt-icon">👤</span> 资料
-    </button>
-    <button class="bottom-tab" data-tab="memo">
-      <span class="bt-icon">📝</span> 备忘
-    </button>
-    <button class="bottom-tab" data-tab="accounting">
-      <span class="bt-icon">💰</span> 记账
-    </button>
-  </nav>
-
-  <!-- 主内容区 -->
-  <main class="main-content">
+  <!-- ====== 主内容区 ====== -->
+  <main class="main-content" id="mainContent">
 
     <!-- ========== 个人资料 ========== -->
     <section class="tab-content active" id="tab-profile">
-      <div class="page-header">
-        <h1>个人资料</h1>
-        <button class="btn btn-primary" id="editProfileBtn">✏️ 编辑资料</button>
-      </div>
-
       <div class="profile-card card">
         <div class="profile-header">
           <div class="avatar avatar-xl" id="profileAvatar">👤</div>
@@ -107,12 +63,11 @@
           <div class="detail-group">
             <h4>🏷️ 技能标签</h4>
             <div class="skill-tags" id="displaySkills">
-              <span class="tag">HTML</span>
-              <span class="tag">CSS</span>
-              <span class="tag">JavaScript</span>
+              <span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span>
             </div>
           </div>
         </div>
+        <button class="btn btn-primary" id="editProfileBtn" style="margin-top:24px;">✏️ 编辑资料</button>
       </div>
 
       <!-- 编辑资料弹窗 -->
@@ -123,38 +78,14 @@
             <button class="modal-close" id="closeProfileModal" aria-label="关闭弹窗">✕</button>
           </div>
           <div class="modal-body">
-            <div class="form-group">
-              <label>头像 Emoji</label>
-              <input type="text" id="editAvatar" placeholder="选择一个 emoji，如 😊">
-            </div>
-            <div class="form-group">
-              <label>姓名</label>
-              <input type="text" id="editName" placeholder="你的名字">
-            </div>
-            <div class="form-group">
-              <label>头衔</label>
-              <input type="text" id="editTitle" placeholder="如：全栈开发者">
-            </div>
-            <div class="form-group">
-              <label>个人简介</label>
-              <textarea id="editBio" rows="3" placeholder="写一段简短的个人介绍..."></textarea>
-            </div>
-            <div class="form-group">
-              <label>邮箱</label>
-              <input type="email" id="editEmail" placeholder="email@example.com">
-            </div>
-            <div class="form-group">
-              <label>手机</label>
-              <input type="text" id="editPhone" placeholder="手机号码">
-            </div>
-            <div class="form-group">
-              <label>GitHub</label>
-              <input type="text" id="editGithub" placeholder="GitHub 用户名">
-            </div>
-            <div class="form-group">
-              <label>技能标签（逗号分隔）</label>
-              <input type="text" id="editSkills" placeholder="HTML, CSS, JavaScript">
-            </div>
+            <div class="form-group"><label>头像 Emoji</label><input type="text" id="editAvatar" placeholder="选择一个 emoji"></div>
+            <div class="form-group"><label>姓名</label><input type="text" id="editName" placeholder="你的名字"></div>
+            <div class="form-group"><label>头衔</label><input type="text" id="editTitle" placeholder="如：全栈开发者"></div>
+            <div class="form-group"><label>个人简介</label><textarea id="editBio" rows="3" placeholder="写一段简短的个人介绍..."></textarea></div>
+            <div class="form-group"><label>邮箱</label><input type="email" id="editEmail" placeholder="email@example.com"></div>
+            <div class="form-group"><label>手机</label><input type="text" id="editPhone" placeholder="手机号码"></div>
+            <div class="form-group"><label>GitHub</label><input type="text" id="editGithub" placeholder="GitHub 用户名"></div>
+            <div class="form-group"><label>技能标签（逗号分隔）</label><input type="text" id="editSkills" placeholder="HTML, CSS, JavaScript"></div>
           </div>
           <div class="modal-footer">
             <button class="btn" id="cancelProfileBtn">取消</button>
@@ -166,32 +97,25 @@
 
     <!-- ========== 备忘录 ========== -->
     <section class="tab-content" id="tab-memo">
-      <div class="page-header">
-        <h1>📝 备忘录</h1>
-        <button class="btn btn-primary" id="addMemoBtn">＋ 新建备忘</button>
-      </div>
-
       <div class="toolbar">
         <input type="text" class="search-input" id="memoSearch" placeholder="🔍 搜索备忘...">
         <select class="filter-select" id="memoCategoryFilter">
           <option value="all">全部分类</option>
-          <option value="工作">工作</option>
-          <option value="生活">生活</option>
-          <option value="学习">学习</option>
-          <option value="其他">其他</option>
+          <option value="工作">工作</option><option value="生活">生活</option>
+          <option value="学习">学习</option><option value="其他">其他</option>
         </select>
+        <button class="btn btn-primary" id="addMemoBtn">＋ 新建</button>
       </div>
 
       <div class="memo-grid" id="memoGrid">
-        <!-- 空状态 -->
         <div class="empty-state" id="memoEmpty">
           <div class="empty-icon">📋</div>
           <p>还没有备忘录</p>
-          <p class="empty-hint">点击「新建备忘」开始记录</p>
+          <p class="empty-hint">点击「新建」开始记录</p>
         </div>
       </div>
 
-      <!-- 备忘编辑弹窗 -->
+      <!-- 备忘弹窗 -->
       <div class="modal-overlay" id="memoModal">
         <div class="modal">
           <div class="modal-header">
@@ -199,25 +123,12 @@
             <button class="modal-close" id="closeMemoModal" aria-label="关闭弹窗">✕</button>
           </div>
           <div class="modal-body">
-            <div class="form-group">
-              <label>标题</label>
-              <input type="text" id="memoTitle" placeholder="备忘标题">
+            <div class="form-group"><label>标题</label><input type="text" id="memoTitle" placeholder="备忘标题"></div>
+            <div class="form-group"><label>内容</label><textarea id="memoContent" rows="6" placeholder="写点什么..."></textarea></div>
+            <div class="form-group"><label>分类</label>
+              <select id="memoCategory"><option value="工作">工作</option><option value="生活">生活</option><option value="学习">学习</option><option value="其他">其他</option></select>
             </div>
-            <div class="form-group">
-              <label>内容</label>
-              <textarea id="memoContent" rows="6" placeholder="写点什么..."></textarea>
-            </div>
-            <div class="form-group">
-              <label>分类</label>
-              <select id="memoCategory">
-                <option value="工作">工作</option>
-                <option value="生活">生活</option>
-                <option value="学习">学习</option>
-                <option value="其他">其他</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>颜色标签</label>
+            <div class="form-group"><label>颜色标签</label>
               <div class="color-picker" id="memoColorPicker">
                 <span class="color-dot active" data-color="#4f46e5" style="background:#4f46e5"></span>
                 <span class="color-dot" data-color="#059669" style="background:#059669"></span>
@@ -227,12 +138,9 @@
                 <span class="color-dot" data-color="#0891b2" style="background:#0891b2"></span>
               </div>
             </div>
-            <div class="form-group">
-              <label>⏰ 日历提醒</label>
-              <input type="datetime-local" id="memoReminder" style="color:var(--gray-700);">
-              <span style="font-size:12px;color:var(--gray-400);margin-top:4px;display:inline-block;">
-                设置后可将备忘添加到 iPhone 系统日历，到时间自动弹通知
-              </span>
+            <div class="form-group"><label>⏰ 日历提醒</label>
+              <input type="datetime-local" id="memoReminder">
+              <span class="helper-text">设置后可将备忘添加到 iPhone 系统日历</span>
             </div>
           </div>
           <div class="modal-footer">
@@ -246,10 +154,6 @@
 
     <!-- ========== 记账本 ========== -->
     <section class="tab-content" id="tab-accounting">
-      <div class="page-header">
-        <h1>💰 记账本</h1>
-        <button class="btn btn-primary" id="addTransactionBtn">＋ 记一笔</button>
-      </div>
 
       <!-- 余额卡片 -->
       <div class="balance-cards">
@@ -267,11 +171,44 @@
         </div>
       </div>
 
+      <!-- 月历视图 -->
+      <div class="calendar-card card" id="calendarCard">
+        <div class="calendar-header">
+          <button class="cal-nav" id="calPrev" aria-label="上个月">◀</button>
+          <h3 class="cal-month-label" id="calMonthLabel">2026年6月</h3>
+          <button class="cal-nav" id="calNext" aria-label="下个月">▶</button>
+        </div>
+        <div class="calendar-weekdays">
+          <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+        </div>
+        <div class="calendar-days" id="calendarDays"></div>
+        <div class="calendar-legend">
+          <span><span class="cal-dot expense"></span> 有支出</span>
+          <span><span class="cal-dot income"></span> 有收入</span>
+        </div>
+      </div>
+
+      <!-- 每日支出折线图 -->
+      <div class="chart-card card" id="chartCard">
+        <div class="chart-header">
+          <h4>📊 每日支出趋势</h4>
+          <select class="chart-range" id="chartRange">
+            <option value="7">近7天</option>
+            <option value="14" selected>近14天</option>
+            <option value="30">近30天</option>
+          </select>
+        </div>
+        <div class="chart-container" id="chartContainer">
+          <svg class="spending-chart" id="spendingChart" viewBox="0 0 600 220" preserveAspectRatio="xMidYMid meet"></svg>
+          <div class="chart-empty" id="chartEmpty" style="display:none;">
+            <p>暂无支出数据</p>
+          </div>
+        </div>
+      </div>
+
       <!-- 筛选栏 -->
       <div class="toolbar">
-        <select class="filter-select" id="monthFilter">
-          <option value="all">全部月份</option>
-        </select>
+        <select class="filter-select" id="monthFilter"><option value="all">全部月份</option></select>
         <select class="filter-select" id="typeFilter">
           <option value="all">全部类型</option>
           <option value="income">收入</option>
@@ -279,15 +216,12 @@
         </select>
         <select class="filter-select" id="categoryFilter">
           <option value="all">全部分类</option>
-          <option value="工资">工资</option>
-          <option value="兼职">兼职</option>
-          <option value="餐饮">餐饮</option>
-          <option value="交通">交通</option>
-          <option value="购物">购物</option>
-          <option value="娱乐">娱乐</option>
-          <option value="居住">居住</option>
-          <option value="其他">其他</option>
+          <option value="工资">工资</option><option value="兼职">兼职</option>
+          <option value="餐饮">餐饮</option><option value="交通">交通</option>
+          <option value="购物">购物</option><option value="娱乐">娱乐</option>
+          <option value="居住">居住</option><option value="其他">其他</option>
         </select>
+        <button class="btn btn-primary" id="addTransactionBtn">＋ 记一笔</button>
       </div>
 
       <!-- 账单列表 -->
@@ -307,43 +241,21 @@
             <button class="modal-close" id="closeTransactionModal" aria-label="关闭弹窗">✕</button>
           </div>
           <div class="modal-body">
-            <div class="form-group">
-              <label>类型</label>
+            <div class="form-group"><label>类型</label>
               <div class="type-toggle">
                 <button class="type-btn active" data-type="expense">🔴 支出</button>
                 <button class="type-btn" data-type="income">🟢 收入</button>
               </div>
             </div>
-            <div class="form-group">
-              <label>金额</label>
-              <input type="number" id="transactionAmount" placeholder="0.00" step="0.01" min="0">
-            </div>
-            <div class="form-group">
-              <label>分类</label>
+            <div class="form-group"><label>金额</label><input type="number" id="transactionAmount" placeholder="0.00" step="0.01" min="0"></div>
+            <div class="form-group"><label>分类</label>
               <select id="transactionCategory">
-                <optgroup label="收入分类">
-                  <option value="工资">工资</option>
-                  <option value="兼职">兼职</option>
-                  <option value="其他收入">其他收入</option>
-                </optgroup>
-                <optgroup label="支出分类">
-                  <option value="餐饮" selected>餐饮</option>
-                  <option value="交通">交通</option>
-                  <option value="购物">购物</option>
-                  <option value="娱乐">娱乐</option>
-                  <option value="居住">居住</option>
-                  <option value="其他支出">其他支出</option>
-                </optgroup>
+                <optgroup label="收入分类"><option value="工资">工资</option><option value="兼职">兼职</option><option value="其他收入">其他收入</option></optgroup>
+                <optgroup label="支出分类"><option value="餐饮" selected>餐饮</option><option value="交通">交通</option><option value="购物">购物</option><option value="娱乐">娱乐</option><option value="居住">居住</option><option value="其他支出">其他支出</option></optgroup>
               </select>
             </div>
-            <div class="form-group">
-              <label>日期</label>
-              <input type="date" id="transactionDate">
-            </div>
-            <div class="form-group">
-              <label>备注</label>
-              <input type="text" id="transactionNote" placeholder="备注（可选）">
-            </div>
+            <div class="form-group"><label>日期</label><input type="date" id="transactionDate"></div>
+            <div class="form-group"><label>备注</label><input type="text" id="transactionNote" placeholder="备注（可选）"></div>
           </div>
           <div class="modal-footer">
             <button class="btn btn-danger" id="deleteTransactionBtn" style="display:none;margin-right:auto;">🗑 删除</button>
@@ -356,41 +268,44 @@
 
   </main>
 
+  <!-- ====== 底部导航栏（始终可见，iOS TabBar 风格） ====== -->
+  <nav class="bottom-tabs" id="bottomTabs">
+    <button class="bottom-tab active" data-tab="profile">
+      <span class="bt-icon">👤</span><span class="bt-label">资料</span>
+    </button>
+    <button class="bottom-tab" data-tab="memo">
+      <span class="bt-icon">📝</span><span class="bt-label">备忘</span>
+    </button>
+    <button class="bottom-tab" data-tab="accounting">
+      <span class="bt-icon">💰</span><span class="bt-label">记账</span>
+    </button>
+  </nav>
+
   <script src="js/app.js"></script>
 
-  <!-- 注册 Service Worker（离线缓存） -->
+  <!-- Service Worker -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('✅ Service Worker 已注册 — 支持离线使用'))
-        .catch(err => console.log('Service Worker 注册失败:', err));
+        .then(() => console.log('✅ SW registered'))
+        .catch(err => console.log('SW failed:', err));
     }
   </script>
 
-  <!-- iOS 添加到主屏幕引导 -->
+  <!-- iOS Add to Home Screen -->
   <script>
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const isStandalone = window.navigator.standalone;
-    if (isIOS && !isStandalone && !localStorage.getItem('pwa-banner-dismissed')) {
-      window.addEventListener('load', () => {
-        const banner = document.createElement('div');
-        banner.id = 'ios-pwa-banner';
-        banner.innerHTML = `
-          <div style="
-            position:fixed;bottom:20px;left:16px;right:16px;
-            background:#1f2937;color:#fff;border-radius:14px;
-            padding:16px 20px;z-index:999;font-size:14px;
-            box-shadow:0 8px 30px rgba(0,0,0,.3);
-            display:flex;align-items:center;gap:12px;
-          ">
-            <span style="font-size:28px;">📱</span>
-            <span style="flex:1;">点击下方 <b>分享按钮</b> → <b>添加到主屏幕</b>，像 App 一样使用</span>
-            <button onclick="this.parentElement.remove();localStorage.setItem('pwa-banner-dismissed','1')"
-              style="background:transparent;border:none;color:#fff;font-size:20px;cursor:pointer;padding:4px 8px;">✕</button>
-          </div>`;
-        document.body.appendChild(banner);
-      });
-    }
+    (function(){
+      var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+      var isStandalone=window.navigator.standalone;
+      if(isIOS&&!isStandalone&&!localStorage.getItem('pwa-banner-dismissed')){
+        window.addEventListener('load',function(){
+          var b=document.createElement('div');
+          b.id='ios-pwa-banner';
+          b.innerHTML='<div style="position:fixed;bottom:100px;left:16px;right:16px;background:#1f2937;color:#fff;border-radius:14px;padding:16px 20px;z-index:999;font-size:14px;box-shadow:0 8px 30px rgba(0,0,0,.3);display:flex;align-items:center;gap:12px;"><span style="font-size:28px;">📱</span><span style="flex:1;">点击 <b>分享</b> → <b>添加到主屏幕</b>，像 App 一样使用</span><button onclick="this.parentElement.remove();localStorage.setItem(\'pwa-banner-dismissed\',\'1\')" style="background:transparent;border:none;color:#fff;font-size:20px;cursor:pointer;">✕</button></div>';
+          document.body.appendChild(b);
+        });
+      }
+    })();
   </script>
 </body>
 </html>

@@ -1,4 +1,8 @@
-/* ========== 日夜模式切换 ========== */
+/* ================================================================
+   个人空间 v4.0 — App Shell + Calendar + Chart
+   ================================================================ */
+
+/* ========== 日夜模式 ========== */
 const THEME_KEY = 'personal_site_theme';
 const html = document.documentElement;
 
@@ -16,45 +20,22 @@ function applyTheme(theme) {
   html.setAttribute('data-theme', theme);
   const isDark = theme === 'dark';
   const icon = isDark ? '☀️' : '🌙';
-  const label = isDark ? '日间模式' : '夜间模式';
-
-  // 更新侧边栏按钮
-  const sidebarBtn = document.getElementById('themeToggleSidebar');
-  if (sidebarBtn) {
-    sidebarBtn.querySelector('.theme-icon').textContent = icon;
-    sidebarBtn.childNodes[1] && (sidebarBtn.childNodes[1].textContent = ' ' + label);
-  }
-
-  // 更新移动端按钮
-  const mobileBtn = document.getElementById('themeToggleMobile');
-  if (mobileBtn) { mobileBtn.textContent = icon; }
-
-  // 更新 PWA 主题色
+  document.getElementById('themeBtn').textContent = icon;
   const metaTheme = document.querySelector('meta[name="theme-color"]');
-  if (metaTheme) {
-    metaTheme.content = isDark ? '#09090F' : '#FAFAFA';
-  }
+  if (metaTheme) metaTheme.content = isDark ? '#09090F' : '#FAFAFA';
 }
 
 function toggleTheme() {
-  const current = html.getAttribute('data-theme');
-  const next = current === 'dark' ? 'light' : 'dark';
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   localStorage.setItem(THEME_KEY, next);
   applyTheme(next);
 }
 
-// 初始化主题
 applyTheme(getTheme());
+document.getElementById('themeBtn').addEventListener('click', toggleTheme);
 
-// 绑定切换按钮
-document.getElementById('themeToggleSidebar').addEventListener('click', toggleTheme);
-document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
-
-// 监听系统主题变化（用户未手动设置时跟随系统）
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-  if (!localStorage.getItem(THEME_KEY)) {
-    applyTheme(e.matches ? 'dark' : 'light');
-  }
+  if (!localStorage.getItem(THEME_KEY)) applyTheme(e.matches ? 'dark' : 'light');
 });
 
 /* ========== 数据存储 ========== */
@@ -67,112 +48,27 @@ const storage = {
 };
 
 /* ========== 页面切换 ========== */
-const tabs = document.querySelectorAll('.nav-item');
 const contents = document.querySelectorAll('.tab-content');
 
 function switchTab(tabName) {
-  tabs.forEach(b => b.classList.remove('active'));
   contents.forEach(c => c.classList.remove('active'));
-
-  const targetTab = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
-  if (targetTab) targetTab.classList.add('active');
   document.getElementById('tab-' + tabName).classList.add('active');
-
-  // 同步底部导航栏
   document.querySelectorAll('.bottom-tab').forEach(b => {
     b.classList.toggle('active', b.dataset.tab === tabName);
   });
-
   if (tabName === 'accounting') renderAccounting();
-
-  // 移动端：切换页面后关闭侧边栏
-  if (window.innerWidth <= 768) closeMobileSidebar();
 }
 
-tabs.forEach(btn => {
-  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-});
-
-// 底部导航栏
 document.querySelectorAll('.bottom-tab').forEach(btn => {
   btn.addEventListener('click', () => switchTab(btn.dataset.tab));
 });
 
-/* ========== 侧边栏展开/折叠 ========== */
-const sidebar = document.getElementById('sidebar');
-const sidebarToggle = document.getElementById('sidebarToggle');
-
-function updateSidebarToggleIcon() {
-  const isCollapsed = sidebar.classList.contains('collapsed');
-  sidebarToggle.innerHTML = isCollapsed ? '▶' : '◀';
-  sidebarToggle.title = isCollapsed ? '展开菜单' : '收起菜单';
-}
-
-sidebarToggle.addEventListener('click', () => {
-  sidebar.classList.toggle('collapsed');
-  updateSidebarToggleIcon();
-});
-
-// 初始化图标状态
-updateSidebarToggleIcon();
-
-// 折叠状态下，点击侧边栏任意空白处即可展开（桌面端）
-sidebar.addEventListener('click', (e) => {
-  if (window.innerWidth > 768 && sidebar.classList.contains('collapsed')) {
-    // 不拦截导航按钮的点击
-    if (!e.target.closest('.nav-item')) {
-      sidebar.classList.remove('collapsed');
-      updateSidebarToggleIcon();
-    }
-  }
-});
-
-/* ========== 移动端：汉堡菜单 + 遮罩 ========== */
-const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-const sidebarOverlay = document.getElementById('sidebarOverlay');
-
-function openMobileSidebar() {
-  sidebar.classList.add('open');
-  sidebar.classList.remove('collapsed');
-  sidebarOverlay.classList.add('show');
-  mobileMenuBtn.style.opacity = '0';
-}
-
-function closeMobileSidebar() {
-  sidebar.classList.remove('open');
-  sidebarOverlay.classList.remove('show');
-  mobileMenuBtn.style.opacity = '1';
-}
-
-mobileMenuBtn.addEventListener('click', openMobileSidebar);
-sidebarOverlay.addEventListener('click', closeMobileSidebar);
-
-// 窗口大小变化时重置移动端状态
-let wasMobile = window.innerWidth <= 768;
-window.addEventListener('resize', () => {
-  const isMobile = window.innerWidth <= 768;
-  if (isMobile && !wasMobile) {
-    // Desktop → Mobile: close sidebar
-    closeMobileSidebar();
-  }
-  if (!isMobile && wasMobile) {
-    // Mobile → Desktop: ensure sidebar starts open
-    sidebar.classList.remove('open', 'collapsed');
-    sidebarOverlay.classList.remove('show');
-    mobileMenuBtn.style.opacity = '1';
-    updateSidebarToggleIcon();
-  }
-  wasMobile = isMobile;
-});
-
-/* ========== 无障碍：prefers-reduced-motion ========== */
+/* ========== Reduced Motion ========== */
 const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 let prefersReducedMotion = motionQuery.matches;
-motionQuery.addEventListener('change', (e) => {
-  prefersReducedMotion = e.matches;
-});
+motionQuery.addEventListener('change', e => { prefersReducedMotion = e.matches; });
 
-/* ========== 工具：日期格式化 ========== */
+/* ========== 工具函数 ========== */
 function formatDate(iso) {
   if (!iso) return '';
   const d = new Date(iso);
@@ -181,10 +77,30 @@ function formatDate(iso) {
 
 function todayStr() { return new Date().toISOString().split('T')[0]; }
 
+function escapeHtml(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function showToast(msg) {
+  const existing = document.querySelector('.toast-msg');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'toast-msg';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity .3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+
 /* ================================================================
    一、个人资料模块
    ================================================================ */
-
 const PROFILE_KEY = 'personal_site_profile';
 const defaultProfile = {
   avatar: '👤', name: '你的名字', title: '职业 / 头衔',
@@ -196,22 +112,18 @@ let profile = storage.get(PROFILE_KEY, defaultProfile);
 
 function renderProfile() {
   document.getElementById('profileAvatar').textContent = profile.avatar;
-  document.getElementById('sidebarAvatar').textContent = profile.avatar;
+  document.getElementById('headerAvatar').textContent = profile.avatar;
   document.getElementById('displayName').textContent = profile.name;
-  document.getElementById('sidebarName').textContent = profile.name;
+  document.getElementById('headerTitle').textContent = profile.name || '个人空间';
   document.getElementById('displayTitle').textContent = profile.title;
   document.getElementById('displayBio').textContent = profile.bio;
   document.getElementById('displayEmail').textContent = profile.email || '未填写';
   document.getElementById('displayPhone').textContent = profile.phone || '未填写';
-  document.getElementById('displayGithub').textContent = profile.github ?
-    'github.com/' + profile.github : '未填写';
-
-  const skillsEl = document.getElementById('displaySkills');
-  skillsEl.innerHTML = profile.skills.filter(Boolean).map(s =>
+  document.getElementById('displayGithub').textContent = profile.github ? 'github.com/' + profile.github : '未填写';
+  document.getElementById('displaySkills').innerHTML = profile.skills.filter(Boolean).map(s =>
     `<span class="tag">${s.trim()}</span>`).join('') || '<span class="tag">无</span>';
 }
 
-// 编辑弹窗
 document.getElementById('editProfileBtn').addEventListener('click', () => {
   document.getElementById('editAvatar').value = profile.avatar;
   document.getElementById('editName').value = profile.name;
@@ -224,15 +136,10 @@ document.getElementById('editProfileBtn').addEventListener('click', () => {
   document.getElementById('profileModal').classList.add('show');
 });
 
-function closeProfileModal() {
-  document.getElementById('profileModal').classList.remove('show');
-}
-
+function closeProfileModal() { document.getElementById('profileModal').classList.remove('show'); }
 document.getElementById('closeProfileModal').addEventListener('click', closeProfileModal);
 document.getElementById('cancelProfileBtn').addEventListener('click', closeProfileModal);
-document.getElementById('profileModal').addEventListener('click', function(e) {
-  if (e.target === this) closeProfileModal();
-});
+document.getElementById('profileModal').addEventListener('click', function(e) { if (e.target === this) closeProfileModal(); });
 
 document.getElementById('saveProfileBtn').addEventListener('click', () => {
   profile.avatar = document.getElementById('editAvatar').value || '👤';
@@ -242,8 +149,7 @@ document.getElementById('saveProfileBtn').addEventListener('click', () => {
   profile.email = document.getElementById('editEmail').value;
   profile.phone = document.getElementById('editPhone').value;
   profile.github = document.getElementById('editGithub').value;
-  profile.skills = document.getElementById('editSkills').value
-    .split(',').map(s => s.trim()).filter(Boolean);
+  profile.skills = document.getElementById('editSkills').value.split(',').map(s => s.trim()).filter(Boolean);
   storage.set(PROFILE_KEY, profile);
   renderProfile();
   closeProfileModal();
@@ -252,7 +158,6 @@ document.getElementById('saveProfileBtn').addEventListener('click', () => {
 /* ================================================================
    二、备忘录模块
    ================================================================ */
-
 const MEMO_KEY = 'personal_site_memos';
 let memos = storage.get(MEMO_KEY, []);
 let editingMemoId = null;
@@ -263,18 +168,14 @@ function saveMemos() { storage.set(MEMO_KEY, memos); }
 function renderMemos(filter = '', category = 'all') {
   const grid = document.getElementById('memoGrid');
   const empty = document.getElementById('memoEmpty');
-
   let filtered = memos;
   if (category !== 'all') filtered = filtered.filter(m => m.category === category);
   if (filter) {
     const kw = filter.toLowerCase();
     filtered = filtered.filter(m => m.title.toLowerCase().includes(kw) || m.content.toLowerCase().includes(kw));
   }
-
   filtered.sort((a, b) => (b.updatedAt || b.createdAt).localeCompare(a.updatedAt || a.createdAt));
-
-  const cards = grid.querySelectorAll('.memo-card');
-  cards.forEach(c => c.remove());
+  grid.querySelectorAll('.memo-card').forEach(c => c.remove());
 
   if (filtered.length === 0) {
     empty.style.display = 'block';
@@ -285,22 +186,11 @@ function renderMemos(filter = '', category = 'all') {
       card.className = 'memo-card';
       card.style.borderLeftColor = m.color || '#4f46e5';
       const hasReminder = m.reminder && new Date(m.reminder) > new Date();
-      card.innerHTML = `
-        <div class="memo-card-header">
-          <span class="memo-card-category">${m.category || '其他'}</span>
-          ${hasReminder ? '<span class="memo-reminder-badge" title="已设提醒">🔔</span>' : ''}
-        </div>
-        <div class="memo-card-title">${escapeHtml(m.title) || '无标题'}</div>
+      card.innerHTML = `<div class="memo-card-header"><span class="memo-card-category">${m.category||'其他'}</span>${hasReminder?'<span class="memo-reminder-badge" title="已设提醒">🔔</span>':''}</div>
+        <div class="memo-card-title">${escapeHtml(m.title)||'无标题'}</div>
         <div class="memo-card-content">${escapeHtml(m.content)}</div>
-        <div class="memo-card-date">
-          ${formatDate(m.updatedAt || m.createdAt)}
-          ${hasReminder ? ' · ⏰ ' + formatDateTime(m.reminder) : ''}
-        </div>
-        ${hasReminder ? `
-          <button class="btn btn-sm btn-calendar" onclick="event.stopPropagation();addToCalendar('${m.id}')">
-            📅 加到日历
-          </button>` : ''}
-      `;
+        <div class="memo-card-date">${formatDate(m.updatedAt||m.createdAt)}${hasReminder?' · ⏰ '+formatDateTime(m.reminder):''}</div>
+        ${hasReminder?`<button class="btn btn-sm btn-calendar" onclick="event.stopPropagation();addToCalendar('${m.id}')">📅 加到日历</button>`:''}`;
       card.addEventListener('click', () => openMemoEditor(m.id));
       grid.appendChild(card);
     });
@@ -310,9 +200,7 @@ function renderMemos(filter = '', category = 'all') {
 function openMemoEditor(id = null) {
   editingMemoId = id;
   const modal = document.getElementById('memoModal');
-  const titleEl = document.getElementById('memoModalTitle');
   const deleteBtn = document.getElementById('deleteMemoBtn');
-
   if (id) {
     const m = memos.find(x => x.id === id);
     if (!m) return;
@@ -321,7 +209,7 @@ function openMemoEditor(id = null) {
     document.getElementById('memoCategory').value = m.category || '其他';
     document.getElementById('memoReminder').value = m.reminder || '';
     memoColor = m.color || '#4f46e5';
-    titleEl.textContent = '编辑备忘';
+    document.getElementById('memoModalTitle').textContent = '编辑备忘';
     deleteBtn.style.display = 'inline-block';
   } else {
     document.getElementById('memoTitle').value = '';
@@ -329,28 +217,21 @@ function openMemoEditor(id = null) {
     document.getElementById('memoCategory').value = '工作';
     document.getElementById('memoReminder').value = '';
     memoColor = '#4f46e5';
-    titleEl.textContent = '新建备忘';
+    document.getElementById('memoModalTitle').textContent = '新建备忘';
     deleteBtn.style.display = 'none';
   }
-
   document.querySelectorAll('#memoColorPicker .color-dot').forEach(d => {
     d.classList.toggle('active', d.dataset.color === memoColor);
   });
-
   modal.classList.add('show');
 }
 
-function closeMemoModal() {
-  document.getElementById('memoModal').classList.remove('show');
-  editingMemoId = null;
-}
+function closeMemoModal() { document.getElementById('memoModal').classList.remove('show'); editingMemoId = null; }
 
 document.getElementById('addMemoBtn').addEventListener('click', () => openMemoEditor());
 document.getElementById('closeMemoModal').addEventListener('click', closeMemoModal);
 document.getElementById('cancelMemoBtn').addEventListener('click', closeMemoModal);
-document.getElementById('memoModal').addEventListener('click', function(e) {
-  if (e.target === this) closeMemoModal();
-});
+document.getElementById('memoModal').addEventListener('click', function(e) { if (e.target === this) closeMemoModal(); });
 
 document.querySelectorAll('#memoColorPicker .color-dot').forEach(dot => {
   dot.addEventListener('click', function() {
@@ -366,47 +247,28 @@ document.getElementById('saveMemoBtn').addEventListener('click', () => {
   const category = document.getElementById('memoCategory').value;
   const reminder = document.getElementById('memoReminder').value;
   const now = new Date().toISOString();
-
   if (!title && !content) return;
-
   if (editingMemoId) {
     const m = memos.find(x => x.id === editingMemoId);
-    if (m) {
-      m.title = title; m.content = content; m.category = category;
-      m.reminder = reminder; m.color = memoColor; m.updatedAt = now;
-    }
+    if (m) { m.title=title; m.content=content; m.category=category; m.reminder=reminder; m.color=memoColor; m.updatedAt=now; }
   } else {
-    memos.push({
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      title, content, category, reminder, color: memoColor,
-      createdAt: now, updatedAt: now
-    });
+    memos.push({ id: Date.now().toString(36)+Math.random().toString(36).slice(2,6), title, content, category, reminder, color:memoColor, createdAt:now, updatedAt:now });
   }
-
-  saveMemos();
-  closeMemoModal();
-  renderMemos(
-    document.getElementById('memoSearch').value,
-    document.getElementById('memoCategoryFilter').value
-  );
+  saveMemos(); closeMemoModal();
+  renderMemos(document.getElementById('memoSearch').value, document.getElementById('memoCategoryFilter').value);
 });
 
 document.getElementById('deleteMemoBtn').addEventListener('click', () => {
   if (!editingMemoId) return;
   if (!confirm('确定删除这条备忘录吗？')) return;
   memos = memos.filter(m => m.id !== editingMemoId);
-  saveMemos();
-  closeMemoModal();
-  renderMemos(
-    document.getElementById('memoSearch').value,
-    document.getElementById('memoCategoryFilter').value
-  );
+  saveMemos(); closeMemoModal();
+  renderMemos(document.getElementById('memoSearch').value, document.getElementById('memoCategoryFilter').value);
 });
 
 document.getElementById('memoSearch').addEventListener('input', function() {
   renderMemos(this.value, document.getElementById('memoCategoryFilter').value);
 });
-
 document.getElementById('memoCategoryFilter').addEventListener('change', function() {
   renderMemos(document.getElementById('memoSearch').value, this.value);
 });
@@ -414,7 +276,6 @@ document.getElementById('memoCategoryFilter').addEventListener('change', functio
 /* ================================================================
    三、记账模块
    ================================================================ */
-
 const ACCOUNT_KEY = 'personal_site_accounting';
 let transactions = storage.get(ACCOUNT_KEY, []);
 let editingTxId = null;
@@ -422,44 +283,201 @@ let txType = 'expense';
 
 function saveTransactions() { storage.set(ACCOUNT_KEY, transactions); }
 
-function renderAccounting() {
-  updateBalanceCards();
-  populateMonthFilter();
-  applyTransactionFilters();
-}
-
+/* ---------- 余额卡片 ---------- */
 function updateBalanceCards() {
   let totalIn = 0, totalOut = 0;
-  transactions.forEach(t => {
-    if (t.type === 'income') totalIn += t.amount;
-    else totalOut += t.amount;
-  });
+  transactions.forEach(t => { if (t.type === 'income') totalIn += t.amount; else totalOut += t.amount; });
   document.getElementById('totalIncome').textContent = '¥' + totalIn.toFixed(2);
   document.getElementById('totalExpense').textContent = '¥' + totalOut.toFixed(2);
   document.getElementById('totalBalance').textContent = '¥' + (totalIn - totalOut).toFixed(2);
 }
 
+/* ---------- 月历 ---------- */
+let calYear, calMonth;
+
+function renderCalendar() {
+  const now = new Date();
+  if (!calYear) { calYear = now.getFullYear(); calMonth = now.getMonth(); }
+
+  document.getElementById('calMonthLabel').textContent = `${calYear}年${calMonth+1}月`;
+  const daysEl = document.getElementById('calendarDays');
+  daysEl.innerHTML = '';
+
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const daysInPrev = new Date(calYear, calMonth, 0).getDate();
+
+  // Build date → transaction types map
+  const dateMap = {};
+  transactions.forEach(t => {
+    if (!t.date) return;
+    const [y,m,d] = t.date.split('-').map(Number);
+    if (y === calYear && m === calMonth+1) {
+      if (!dateMap[d]) dateMap[d] = new Set();
+      dateMap[d].add(t.type);
+    }
+  });
+
+  const today = new Date();
+
+  // Prev month filler
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const day = daysInPrev - i;
+    const el = document.createElement('span');
+    el.className = 'cal-day other-month';
+    el.textContent = day;
+    daysEl.appendChild(el);
+  }
+
+  // Current month days
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement('span');
+    el.className = 'cal-day';
+    el.textContent = d;
+
+    const isToday = calYear === today.getFullYear() && calMonth === today.getMonth() && d === today.getDate();
+    if (isToday) el.classList.add('today');
+
+    const types = dateMap[d];
+    if (types && types.size > 0) {
+      const dots = document.createElement('span');
+      dots.className = 'cal-dots';
+      if (types.has('expense')) dots.innerHTML += '<span class="cal-dot expense"></span>';
+      if (types.has('income')) dots.innerHTML += '<span class="cal-dot income"></span>';
+      el.appendChild(dots);
+    }
+
+    // Click to filter by date
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    el.addEventListener('click', () => {
+      document.getElementById('monthFilter').value = 'all';
+      document.getElementById('typeFilter').value = 'all';
+      document.getElementById('categoryFilter').value = 'all';
+      applyTransactionFilters(dateStr);
+    });
+
+    daysEl.appendChild(el);
+  }
+
+  // Next month filler
+  const totalCells = firstDay + daysInMonth;
+  const remaining = totalCells % 7 === 0 ? 0 : 7 - (totalCells % 7);
+  for (let d = 1; d <= remaining; d++) {
+    const el = document.createElement('span');
+    el.className = 'cal-day other-month';
+    el.textContent = d;
+    daysEl.appendChild(el);
+  }
+}
+
+document.getElementById('calPrev').addEventListener('click', () => {
+  calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar(); renderChart();
+});
+document.getElementById('calNext').addEventListener('click', () => {
+  calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; }
+  renderCalendar(); renderChart();
+});
+
+/* ---------- 每日支出折线图 (SVG) ---------- */
+function renderChart() {
+  const svg = document.getElementById('spendingChart');
+  const empty = document.getElementById('chartEmpty');
+  const range = parseInt(document.getElementById('chartRange').value);
+
+  // Calculate daily expenses for the selected range
+  const today = new Date(); today.setHours(23,59,59,999);
+  const days = [];
+  for (let i = range - 1; i >= 0; i--) {
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    const total = transactions
+      .filter(t => t.type === 'expense' && t.date === dateStr)
+      .reduce((sum, t) => sum + t.amount, 0);
+    days.push({ date: dateStr, day: d.getDate(), month: d.getMonth()+1, total });
+  }
+
+  const hasData = days.some(d => d.total > 0);
+  if (!hasData) { svg.innerHTML = ''; empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+
+  const maxAmount = Math.max(...days.map(d => d.total), 1);
+  const pad = 28, top = 16, bottom = 32, right = 8;
+  const w = 600, h = 220;
+  const chartW = w - pad - right;
+  const chartH = h - top - bottom;
+
+  // Build SVG
+  let html = '';
+
+  // Gradient definition
+  html += `<defs>
+    <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--accent)" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="var(--accent)" stop-opacity="0.02"/>
+    </linearGradient>
+  </defs>`;
+
+  // Horizontal grid lines
+  for (let i = 0; i <= 3; i++) {
+    const y = top + (chartH / 3) * i;
+    html += `<line class="chart-grid-line" x1="${pad}" y1="${y}" x2="${pad+chartW}" y2="${y}"/>`;
+    const val = maxAmount - (maxAmount / 3) * i;
+    html += `<text class="chart-label" x="${pad-6}" y="${y+4}" text-anchor="end">¥${val.toFixed(0)}</text>`;
+  }
+
+  // Data points
+  const stepX = chartW / (days.length - 1 || 1);
+  const points = days.map((d, i) => {
+    const x = pad + stepX * i;
+    const y = top + chartH - (d.total / maxAmount) * chartH;
+    return { x, y, ...d };
+  });
+
+  // Area fill
+  const areaPoints = points.map(p => `${p.x},${p.y}`).join(' ') + ` ${points[points.length-1].x},${top+chartH} ${points[0].x},${top+chartH}`;
+  html += `<polygon class="chart-area" points="${areaPoints}"/>`;
+
+  // Line
+  const linePoints = points.map(p => `${p.x},${p.y}`).join(' ');
+  html += `<polyline class="chart-line" points="${linePoints}"/>`;
+
+  // Dots + labels
+  points.forEach((p, i) => {
+    if (p.total > 0) {
+      html += `<circle class="chart-dot" cx="${p.x}" cy="${p.y}" r="4"/>`;
+      html += `<text class="chart-tooltip" x="${p.x}" y="${p.y-10}" text-anchor="middle">¥${p.total.toFixed(0)}</text>`;
+    }
+    // X-axis labels (show every few days)
+    if (i % Math.ceil(days.length / 7) === 0 || i === days.length - 1) {
+      html += `<text class="chart-label" x="${p.x}" y="${h-4}" text-anchor="middle">${p.month}/${p.day}</text>`;
+    }
+  });
+
+  svg.innerHTML = html;
+}
+
+document.getElementById('chartRange').addEventListener('change', renderChart);
+
+/* ---------- 筛选 & 列表 ---------- */
 function populateMonthFilter() {
   const sel = document.getElementById('monthFilter');
   const current = sel.value;
   const months = new Set();
-  transactions.forEach(t => {
-    if (t.date) months.add(t.date.substring(0, 7));
-  });
+  transactions.forEach(t => { if (t.date) months.add(t.date.substring(0,7)); });
   sel.innerHTML = '<option value="all">全部月份</option>';
-  [...months].sort().reverse().forEach(m => {
-    sel.innerHTML += `<option value="${m}">${m}</option>`;
-  });
+  [...months].sort().reverse().forEach(m => { sel.innerHTML += `<option value="${m}">${m}</option>`; });
   sel.value = current;
 }
 
-function applyTransactionFilters() {
+function applyTransactionFilters(filterDate = null) {
   const month = document.getElementById('monthFilter').value;
   const type = document.getElementById('typeFilter').value;
   const category = document.getElementById('categoryFilter').value;
 
   let filtered = [...transactions];
-  if (month !== 'all') filtered = filtered.filter(t => t.date && t.date.startsWith(month));
+  if (filterDate) filtered = filtered.filter(t => t.date === filterDate);
+  if (!filterDate && month !== 'all') filtered = filtered.filter(t => t.date && t.date.startsWith(month));
   if (type !== 'all') filtered = filtered.filter(t => t.type === type);
   if (category !== 'all') filtered = filtered.filter(t => t.category === category);
 
@@ -479,15 +497,10 @@ function applyTransactionFilters() {
       const sign = isIncome ? '' : '-';
       const item = document.createElement('div');
       item.className = 'transaction-item';
-      item.innerHTML = `
-        <div class="tx-icon ${t.type}">${icon}</div>
-        <div class="tx-info">
-          <div class="tx-category">${t.category}</div>
-          <div class="tx-note">${escapeHtml(t.note || '') || '&nbsp;'}</div>
-        </div>
+      item.innerHTML = `<div class="tx-icon ${t.type}">${icon}</div>
+        <div class="tx-info"><div class="tx-category">${t.category}</div><div class="tx-note">${escapeHtml(t.note||'')||'&nbsp;'}</div></div>
         <div class="tx-date">${formatDate(t.date)}</div>
-        <div class="tx-amount ${t.type}">${sign}¥${t.amount.toFixed(2)}</div>
-      `;
+        <div class="tx-amount ${t.type}">${sign}¥${t.amount.toFixed(2)}</div>`;
       item.addEventListener('click', () => openTransactionEditor(t.id));
       list.appendChild(item);
     });
@@ -495,54 +508,23 @@ function applyTransactionFilters() {
 }
 
 function getCategoryIcon(cat) {
-  const map = { '餐饮': '🍔', '交通': '🚗', '购物': '🛒', '娱乐': '🎮', '居住': '🏠', '工资': '💼', '兼职': '💡' };
+  const map = {'餐饮':'🍔','交通':'🚗','购物':'🛒','娱乐':'🎮','居住':'🏠','工资':'💼','兼职':'💡'};
   return map[cat] || '💰';
 }
 
-document.getElementById('monthFilter').addEventListener('change', applyTransactionFilters);
-document.getElementById('typeFilter').addEventListener('change', applyTransactionFilters);
-document.getElementById('categoryFilter').addEventListener('change', applyTransactionFilters);
+document.getElementById('monthFilter').addEventListener('change', () => applyTransactionFilters());
+document.getElementById('typeFilter').addEventListener('change', () => applyTransactionFilters());
+document.getElementById('categoryFilter').addEventListener('change', () => applyTransactionFilters());
 
-// 类型切换
-document.querySelectorAll('.type-btn').forEach(btn => {
-  btn.addEventListener('click', function() {
-    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-    this.classList.add('active');
-    txType = this.dataset.type;
-
-    // 切换分类选择
-    const catSel = document.getElementById('transactionCategory');
-    if (txType === 'income') {
-      catSel.innerHTML = `
-        <option value="工资">工资</option>
-        <option value="兼职">兼职</option>
-        <option value="其他收入">其他收入</option>`;
-    } else {
-      catSel.innerHTML = `
-        <option value="餐饮">餐饮</option>
-        <option value="交通">交通</option>
-        <option value="购物">购物</option>
-        <option value="娱乐">娱乐</option>
-        <option value="居住">居住</option>
-        <option value="其他支出">其他支出</option>`;
-    }
-  });
-});
-
-// 新建/编辑交易
+/* ---------- 交易弹窗 ---------- */
 document.getElementById('addTransactionBtn').addEventListener('click', () => openTransactionEditor());
 document.getElementById('closeTransactionModal').addEventListener('click', closeTransactionModal);
 document.getElementById('cancelTransactionBtn').addEventListener('click', closeTransactionModal);
-document.getElementById('transactionModal').addEventListener('click', function(e) {
-  if (e.target === this) closeTransactionModal();
-});
+document.getElementById('transactionModal').addEventListener('click', function(e) { if (e.target === this) closeTransactionModal(); });
 
 function openTransactionEditor(id = null) {
   editingTxId = id;
-  const modal = document.getElementById('transactionModal');
-  const titleEl = document.getElementById('transactionModalTitle');
   const deleteBtn = document.getElementById('deleteTransactionBtn');
-
   if (id) {
     const t = transactions.find(x => x.id === id);
     if (!t) return;
@@ -551,7 +533,7 @@ function openTransactionEditor(id = null) {
     document.getElementById('transactionCategory').value = t.category;
     document.getElementById('transactionDate').value = t.date;
     document.getElementById('transactionNote').value = t.note || '';
-    titleEl.textContent = '编辑账单';
+    document.getElementById('transactionModalTitle').textContent = '编辑账单';
     deleteBtn.style.display = 'inline-block';
   } else {
     txType = 'expense';
@@ -559,187 +541,110 @@ function openTransactionEditor(id = null) {
     document.getElementById('transactionCategory').value = '餐饮';
     document.getElementById('transactionDate').value = todayStr();
     document.getElementById('transactionNote').value = '';
-    titleEl.textContent = '记一笔';
+    document.getElementById('transactionModalTitle').textContent = '记一笔';
     deleteBtn.style.display = 'none';
   }
-
-  document.querySelectorAll('.type-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.type === txType);
-  });
-
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === txType));
   updateCategorySelect();
-  modal.classList.add('show');
+  document.getElementById('transactionModal').classList.add('show');
 }
 
 function updateCategorySelect() {
-  const catSel = document.getElementById('transactionCategory');
+  const sel = document.getElementById('transactionCategory');
   if (txType === 'income') {
-    catSel.innerHTML = `
-      <option value="工资">工资</option>
-      <option value="兼职">兼职</option>
-      <option value="其他收入">其他收入</option>`;
+    sel.innerHTML = '<option value="工资">工资</option><option value="兼职">兼职</option><option value="其他收入">其他收入</option>';
   } else {
-    catSel.innerHTML = `
-      <option value="餐饮">餐饮</option>
-      <option value="交通">交通</option>
-      <option value="购物">购物</option>
-      <option value="娱乐">娱乐</option>
-      <option value="居住">居住</option>
-      <option value="其他支出">其他支出</option>`;
+    sel.innerHTML = '<option value="餐饮">餐饮</option><option value="交通">交通</option><option value="购物">购物</option><option value="娱乐">娱乐</option><option value="居住">居住</option><option value="其他支出">其他支出</option>';
   }
 }
 
-function closeTransactionModal() {
-  document.getElementById('transactionModal').classList.remove('show');
-  editingTxId = null;
-}
+function closeTransactionModal() { document.getElementById('transactionModal').classList.remove('show'); editingTxId = null; }
+
+document.querySelectorAll('.type-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+    txType = this.dataset.type;
+    updateCategorySelect();
+  });
+});
 
 document.getElementById('saveTransactionBtn').addEventListener('click', () => {
   const amount = parseFloat(document.getElementById('transactionAmount').value);
   const category = document.getElementById('transactionCategory').value;
   const date = document.getElementById('transactionDate').value || todayStr();
   const note = document.getElementById('transactionNote').value.trim();
-
   if (isNaN(amount) || amount <= 0) { alert('请输入有效金额'); return; }
-
   const now = new Date().toISOString();
-
   if (editingTxId) {
     const t = transactions.find(x => x.id === editingTxId);
-    if (t) {
-      t.type = txType; t.amount = amount; t.category = category;
-      t.date = date; t.note = note; t.updatedAt = now;
-    }
+    if (t) { t.type=txType; t.amount=amount; t.category=category; t.date=date; t.note=note; t.updatedAt=now; }
   } else {
-    transactions.push({
-      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      type: txType, amount, category, date, note,
-      createdAt: now, updatedAt: now
-    });
+    transactions.push({ id: Date.now().toString(36)+Math.random().toString(36).slice(2,6), type:txType, amount, category, date, note, createdAt:now, updatedAt:now });
   }
-
-  saveTransactions();
-  closeTransactionModal();
-  renderAccounting();
+  saveTransactions(); closeTransactionModal(); renderAccounting();
 });
 
 document.getElementById('deleteTransactionBtn').addEventListener('click', () => {
   if (!editingTxId) return;
   if (!confirm('确定删除这条账单吗？')) return;
   transactions = transactions.filter(t => t.id !== editingTxId);
-  saveTransactions();
-  closeTransactionModal();
-  renderAccounting();
+  saveTransactions(); closeTransactionModal(); renderAccounting();
 });
 
-/* ========== 日历提醒：生成 .ics 文件并下载 ========== */
+/* ---------- 记账页完整刷新 ---------- */
+function renderAccounting() {
+  updateBalanceCards();
+  populateMonthFilter();
+  renderCalendar();
+  renderChart();
+  applyTransactionFilters();
+}
 
+/* ================================================================
+   四、日历提醒 (.ics)
+   ================================================================ */
 function formatDateTime(iso) {
   if (!iso) return '';
   const d = new Date(iso);
-  const pad = n => String(n).padStart(2, '0');
+  const pad = n => String(n).padStart(2,'0');
   return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 function toICSDate(iso) {
-  // iCalendar format: 20260629T143000
   const d = new Date(iso);
-  const pad = n => String(n).padStart(2, '0');
+  const pad = n => String(n).padStart(2,'0');
   return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
 }
 
 function addToCalendar(memoId) {
   const m = memos.find(x => x.id === memoId);
   if (!m || !m.reminder) return;
-
   const now = new Date();
-  const uid = memoId + '@personal-space';
   const dtStart = toICSDate(m.reminder);
-  // 提醒时间往后30分钟作为结束
-  const endDate = new Date(new Date(m.reminder).getTime() + 30 * 60000);
+  const endDate = new Date(new Date(m.reminder).getTime() + 30*60000);
   const dtEnd = toICSDate(endDate.toISOString());
-  const dtStamp = toICSDate(now.toISOString());
-
   const title = escapeICS(m.title || '备忘提醒');
-  const desc = escapeICS((m.content || '').replace(/\n/g, '\\n'));
-  const cat = escapeICS(m.category || '');
-
-  const ics = [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//个人空间//备忘提醒//ZH',
-    'CALSCALE:GREGORIAN',
-    'METHOD:PUBLISH',
-    'BEGIN:VEVENT',
-    `UID:${uid}`,
-    `DTSTART:${dtStart}`,
-    `DTEND:${dtEnd}`,
-    `DTSTAMP:${dtStamp}`,
-    `SUMMARY:📝 ${title}`,
-    `DESCRIPTION:${desc}`,
-    `CATEGORIES:${cat}`,
-    'BEGIN:VALARM',
-    'TRIGGER:-PT15M',
-    'ACTION:DISPLAY',
-    `DESCRIPTION:🔔 ${title}`,
-    'END:VALARM',
-    'END:VEVENT',
-    'END:VCALENDAR',
-  ].join('\r\n');
-
-  // 生成文件并触发下载
-  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const desc = escapeICS((m.content || '').replace(/\n/g,'\\n'));
+  const ics = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//个人空间//备忘提醒//ZH','CALSCALE:GREGORIAN','METHOD:PUBLISH',
+    'BEGIN:VEVENT',`UID:${memoId}@personal-space`,`DTSTART:${dtStart}`,`DTEND:${dtEnd}`,`DTSTAMP:${toICSDate(now.toISOString())}`,
+    `SUMMARY:📝 ${title}`,`DESCRIPTION:${desc}`,`CATEGORIES:${escapeICS(m.category||'')}`,
+    'BEGIN:VALARM','TRIGGER:-PT15M','ACTION:DISPLAY',`DESCRIPTION:🔔 ${title}`,'END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+  const blob = new Blob([ics],{type:'text/calendar;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = (m.title || '备忘提醒').replace(/[^\\u4e00-\\u9fa5\\w]/g, '_') + '.ics';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
-  // iOS 提示
+  a.href=url;a.download=(m.title||'备忘提醒').replace(/[^一-龥\w]/g,'_')+'.ics';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
-    showToast('✅ 已下载日历文件\n点击文件 → 添加到日历 → 到时间 iPhone 会自动弹通知');
-  } else {
-    showToast('✅ 日历文件已下载，双击打开即可添加到系统日历');
-  }
+    showToast('✅ 已下载日历文件\n点击文件 → 添加到日历 → iPhone 到时间自动弹通知');
+  } else { showToast('✅ 日历文件已下载，双击打开即可添加到系统日历'); }
 }
 
-function escapeICS(str) {
-  return str.replace(/[\\;,]/g, '\\$&').substring(0, 500);
-}
+function escapeICS(str) { return str.replace(/[\\;,]/g,'\\$&').substring(0,500); }
 
-function showToast(msg) {
-  const existing = document.querySelector('.toast-msg');
-  if (existing) existing.remove();
-  const toast = document.createElement('div');
-  toast.className = 'toast-msg';
-  toast.style.cssText = `
-    position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
-    background:#1f2937;color:#fff;padding:14px 24px;border-radius:12px;
-    font-size:14px;z-index:9999;text-align:center;max-width:90vw;
-    box-shadow:0 8px 30px rgba(0,0,0,.25);white-space:pre-line;
-    animation:toastIn .3s ease;
-  `;
-  toast.textContent = msg;
-  document.body.appendChild(toast);
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transition = 'opacity .3s ease';
-    setTimeout(() => toast.remove(), 300);
-  }, 4000);
-}
-
-/* ========== 工具函数 ========== */
-function escapeHtml(str) {
-  if (!str) return '';
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-/* ========== 初始化 ========== */
+/* ================================================================
+   初始化
+   ================================================================ */
 function init() {
   renderProfile();
   renderMemos();
