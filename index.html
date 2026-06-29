@@ -146,12 +146,15 @@
       <div class="profile-card card">
         <div class="profile-header">
           <div class="avatar avatar-xl" id="profileAvatar">👤</div>
-          <div class="profile-info"><h2 id="displayName">你的名字</h2><p id="displayTitle">职业 / 头衔</p><p id="displayBio">这里写一段个人简介...</p></div>
+          <div class="profile-info">
+            <h2 id="displayNickname">你的昵称</h2>
+            <span class="mbti-badge" id="displayMbti">MBTI</span>
+          </div>
         </div>
         <div class="profile-details">
-          <div class="detail-group"><h4>📧 联系方式</h4><p id="displayEmail">email@example.com</p><p id="displayPhone">未填写</p></div>
-          <div class="detail-group"><h4>🌐 社交链接</h4><p id="displayGithub">未填写</p></div>
-          <div class="detail-group"><h4>🏷️ 技能标签</h4><div class="skill-tags" id="displaySkills"><span class="tag">HTML</span><span class="tag">CSS</span><span class="tag">JavaScript</span></div></div>
+          <div class="detail-group"><h4>💬 QQ</h4><p id="displayQq">未填写</p></div>
+          <div class="detail-group"><h4>🎯 近期目标</h4><p id="displayGoal">未填写</p></div>
+          <div class="detail-group"><h4>❤️ 爱好</h4><div class="skill-tags" id="displayHobbies"><span class="tag">未填写</span></div></div>
         </div>
         <button class="btn btn-primary" id="editProfileBtn" style="margin-top:26px;">✏️ 编辑资料</button>
       </div>
@@ -162,13 +165,19 @@
           <div class="modal-header"><h3>编辑个人资料</h3><button class="modal-close" id="closeProfileModal" aria-label="关闭弹窗">✕</button></div>
           <div class="modal-body">
             <div class="form-group"><label>头像 Emoji</label><input type="text" id="editAvatar" placeholder="选择一个 emoji"></div>
-            <div class="form-group"><label>姓名</label><input type="text" id="editName" placeholder="你的名字"></div>
-            <div class="form-group"><label>头衔</label><input type="text" id="editTitle" placeholder="如：全栈开发者"></div>
-            <div class="form-group"><label>个人简介</label><textarea id="editBio" rows="3" placeholder="写一段简短的个人介绍..."></textarea></div>
-            <div class="form-group"><label>邮箱</label><input type="email" id="editEmail" placeholder="email@example.com"></div>
-            <div class="form-group"><label>手机</label><input type="text" id="editPhone" placeholder="手机号码"></div>
-            <div class="form-group"><label>GitHub</label><input type="text" id="editGithub" placeholder="GitHub 用户名"></div>
-            <div class="form-group"><label>技能标签（逗号分隔）</label><input type="text" id="editSkills" placeholder="HTML, CSS, JavaScript"></div>
+            <div class="form-group"><label>昵称</label><input type="text" id="editNickname" placeholder="你的昵称"></div>
+            <div class="form-group"><label>QQ</label><input type="text" id="editQq" placeholder="QQ号码"></div>
+            <div class="form-group"><label>MBTI</label>
+              <select id="editMbti">
+                <option value="">选择你的 MBTI</option>
+                <option>INTJ</option><option>INTP</option><option>ENTJ</option><option>ENTP</option>
+                <option>INFJ</option><option>INFP</option><option>ENFJ</option><option>ENFP</option>
+                <option>ISTJ</option><option>ISFJ</option><option>ESTJ</option><option>ESFJ</option>
+                <option>ISTP</option><option>ISFP</option><option>ESTP</option><option>ESFP</option>
+              </select>
+            </div>
+            <div class="form-group"><label>爱好（逗号分隔）</label><input type="text" id="editHobbies" placeholder="摄影, 音乐, 旅行"></div>
+            <div class="form-group"><label>近期目标</label><textarea id="editGoal" rows="4" placeholder="最近想达成的小目标..."></textarea></div>
           </div>
           <div class="modal-footer"><button class="btn" id="cancelProfileBtn">取消</button><button class="btn btn-primary" id="saveProfileBtn">保存</button></div>
         </div>

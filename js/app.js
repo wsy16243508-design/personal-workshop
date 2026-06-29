@@ -85,31 +85,29 @@ function showToast(msg) {
    一、个人资料模块
    ================================================================ */
 const PROFILE_KEY = 'personal_site_profile';
-const defaultProfile = { avatar:'👤',name:'你的名字',title:'职业/头衔',bio:'这里写一段个人简介...',email:'email@example.com',phone:'',github:'',skills:['HTML','CSS','JavaScript'] };
+const defaultProfile = { avatar:'👤',nickname:'你的昵称',qq:'',mbti:'',hobbies:[],goal:'' };
 let profile = storage.get(PROFILE_KEY, defaultProfile);
 
 function renderProfile() {
   document.getElementById('profileAvatar').textContent = profile.avatar;
   document.getElementById('headerAvatar').textContent = profile.avatar;
-  document.getElementById('displayName').textContent = profile.name;
-  document.getElementById('headerTitle').textContent = profile.name || '个人空间';
-  document.getElementById('displayTitle').textContent = profile.title;
-  document.getElementById('displayBio').textContent = profile.bio;
-  document.getElementById('displayEmail').textContent = profile.email || '未填写';
-  document.getElementById('displayPhone').textContent = profile.phone || '未填写';
-  document.getElementById('displayGithub').textContent = profile.github ? 'github.com/'+profile.github : '未填写';
-  document.getElementById('displaySkills').innerHTML = profile.skills.filter(Boolean).map(s => `<span class="tag">${s.trim()}</span>`).join('') || '<span class="tag">无</span>';
+  document.getElementById('displayNickname').textContent = profile.nickname;
+  document.getElementById('headerTitle').textContent = profile.nickname || '个人空间';
+  document.getElementById('displayQq').textContent = profile.qq || '未填写';
+  document.getElementById('displayGoal').textContent = profile.goal || '未填写';
+  document.getElementById('displayMbti').textContent = profile.mbti || 'MBTI';
+  document.getElementById('displayMbti').style.display = profile.mbti ? 'inline-block' : 'none';
+  const hobbies = Array.isArray(profile.hobbies) ? profile.hobbies : [];
+  document.getElementById('displayHobbies').innerHTML = hobbies.filter(Boolean).map(s => `<span class="tag">${s.trim()}</span>`).join('') || '<span class="tag">未填写</span>';
 }
 
 document.getElementById('editProfileBtn').addEventListener('click', () => {
   document.getElementById('editAvatar').value = profile.avatar;
-  document.getElementById('editName').value = profile.name;
-  document.getElementById('editTitle').value = profile.title;
-  document.getElementById('editBio').value = profile.bio;
-  document.getElementById('editEmail').value = profile.email;
-  document.getElementById('editPhone').value = profile.phone;
-  document.getElementById('editGithub').value = profile.github;
-  document.getElementById('editSkills').value = profile.skills.join(', ');
+  document.getElementById('editNickname').value = profile.nickname;
+  document.getElementById('editQq').value = profile.qq;
+  document.getElementById('editMbti').value = profile.mbti;
+  document.getElementById('editHobbies').value = Array.isArray(profile.hobbies) ? profile.hobbies.join(', ') : '';
+  document.getElementById('editGoal').value = profile.goal;
   document.getElementById('profileModal').classList.add('show');
 });
 
@@ -120,13 +118,11 @@ document.getElementById('profileModal').addEventListener('click', function(e) { 
 
 document.getElementById('saveProfileBtn').addEventListener('click', () => {
   profile.avatar = document.getElementById('editAvatar').value || '👤';
-  profile.name = document.getElementById('editName').value || '未命名';
-  profile.title = document.getElementById('editTitle').value;
-  profile.bio = document.getElementById('editBio').value;
-  profile.email = document.getElementById('editEmail').value;
-  profile.phone = document.getElementById('editPhone').value;
-  profile.github = document.getElementById('editGithub').value;
-  profile.skills = document.getElementById('editSkills').value.split(',').map(s=>s.trim()).filter(Boolean);
+  profile.nickname = document.getElementById('editNickname').value || '未命名';
+  profile.qq = document.getElementById('editQq').value;
+  profile.mbti = document.getElementById('editMbti').value;
+  profile.hobbies = document.getElementById('editHobbies').value.split(',').map(s=>s.trim()).filter(Boolean);
+  profile.goal = document.getElementById('editGoal').value;
   storage.set(PROFILE_KEY, profile); renderProfile(); closeProfileModal();
 });
 

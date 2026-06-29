@@ -270,6 +270,7 @@ p{color:var(--text-secondary)}
 .detail-group p{font-size:14px;color:var(--text-secondary);margin-bottom:4px}
 .skill-tags{display:flex;flex-wrap:wrap;gap:6px}
 .tag{background:var(--accent-soft);color:var(--accent);padding:5px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid var(--glass-border-strong);box-shadow:var(--shadow-1)}
+.mbti-badge{display:inline-block;background:var(--gradient-accent);color:#FFF;padding:6px 16px;border-radius:20px;font-family:'Archivo',-apple-system,'PingFang SC',sans-serif;font-size:13px;font-weight:700;letter-spacing:.04em;box-shadow:var(--shadow-glow);margin-top:6px}
 
 /* ================================================================
    TOOLBAR
