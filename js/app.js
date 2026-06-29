@@ -223,128 +223,7 @@ function updateBalanceCards() {
   document.getElementById('totalBalance').textContent='¥'+(totalIn-totalOut).toFixed(2);
 }
 
-/* ---------- 可折叠日历（周/月） ---------- */
-let calYear, calMonth, calViewMode = 'month'; // 'month' | 'week'
-
-function renderCalendar() {
-  const now = new Date();
-  if (!calYear) { calYear = now.getFullYear(); calMonth = now.getMonth(); }
-
-  document.getElementById('calMonthLabel').textContent = `${calYear}年${calMonth+1}月`;
-  document.getElementById('calToggle').textContent = calViewMode==='month' ? '📅 月' : '📆 周';
-  const daysEl = document.getElementById('calendarDays');
-  daysEl.className = 'calendar-days' + (calViewMode==='month' ? ' expanded' : '');
-  daysEl.innerHTML = '';
-
-  // Build date → types map
-  const dateMap = {};
-  transactions.forEach(t => {
-    if (!t.date) return;
-    const [y,m,d] = t.date.split('-').map(Number);
-    if (y===calYear && m===calMonth+1) { if(!dateMap[d]) dateMap[d]=new Set(); dateMap[d].add(t.type); }
-  });
-
-  const today = new Date();
-  const firstDay = new Date(calYear, calMonth, 1).getDay();
-  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-  const daysInPrev = new Date(calYear, calMonth, 0).getDate();
-
-  let startDay, endDay;
-
-  if (calViewMode === 'week') {
-    // Show current week (Mon-Sun), falling within this month
-    const todayInMonth = (calYear===today.getFullYear() && calMonth===today.getMonth());
-    const refDate = todayInMonth ? today.getDate() : 1;
-    const ref = new Date(calYear, calMonth, refDate);
-    const dayOfWeek = ref.getDay();
-    const mondayOffset = dayOfWeek===0 ? -6 : 1-dayOfWeek; // Go back to Monday
-    startDay = refDate + mondayOffset;
-    endDay = startDay + 6;
-    // Clamp to month bounds
-    if (startDay < 1) startDay = 1;
-    if (endDay > daysInMonth) endDay = daysInMonth;
-    // Adjust startDay to maintain 7-day span if possible
-    if (endDay - startDay < 6 && startDay > 1) startDay = Math.max(1, endDay - 6);
-    if (endDay - startDay < 6 && endDay < daysInMonth) endDay = Math.min(daysInMonth, startDay + 6);
-  } else {
-    startDay = 1;
-    endDay = daysInMonth;
-  }
-
-  const isMonthView = calViewMode === 'month';
-
-  // Prev month filler (only in month view)
-  if (isMonthView) {
-    for (let i = firstDay-1; i >= 0; i--) {
-      const day = daysInPrev - i;
-      const el = document.createElement('span'); el.className='cal-day other-month'; el.textContent=day; daysEl.appendChild(el);
-    }
-  } else {
-    // In week view, start from Monday offset
-    const weekStartDay = startDay;
-    const weekStartDow = new Date(calYear, calMonth, weekStartDay).getDay();
-    for (let i = 0; i < weekStartDow; i++) {
-      const el = document.createElement('span'); el.className='cal-day other-month'; el.textContent=''; daysEl.appendChild(el);
-    }
-  }
-
-  for (let d = startDay; d <= endDay; d++) {
-    const el = document.createElement('span'); el.className='cal-day'; el.textContent = d;
-
-    const isToday = calYear===today.getFullYear() && calMonth===today.getMonth() && d===today.getDate();
-    if (isToday) el.classList.add('today');
-
-    const types = dateMap[d];
-    if (types && types.size > 0) {
-      const dots = document.createElement('span'); dots.className='cal-dots';
-      if (types.has('expense')) dots.innerHTML += '<span class="cal-dot expense"></span>';
-      if (types.has('income')) dots.innerHTML += '<span class="cal-dot income"></span>';
-      el.appendChild(dots);
-    }
-
-    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    el.addEventListener('click', () => {
-      document.getElementById('monthFilter').value='all';
-      document.getElementById('typeFilter').value='all';
-      document.getElementById('categoryFilter').value='all';
-      applyTransactionFilters(dateStr);
-    });
-    daysEl.appendChild(el);
-  }
-
-  // Next month filler (only in month view)
-  if (isMonthView) {
-    const totalCells = firstDay + daysInMonth;
-    const remaining = totalCells%7===0 ? 0 : 7-(totalCells%7);
-    for (let d=1; d<=remaining; d++) {
-      const el = document.createElement('span'); el.className='cal-day other-month'; el.textContent=d; daysEl.appendChild(el);
-    }
-  } else {
-    const lastDayDow = new Date(calYear, calMonth, endDay).getDay();
-    for (let i = lastDayDow+1; i <= 6; i++) {
-      const el = document.createElement('span'); el.className='cal-day other-month'; el.textContent=''; daysEl.appendChild(el);
-    }
-  }
-}
-
-document.getElementById('calToggle').addEventListener('click', () => {
-  calViewMode = calViewMode==='month' ? 'week' : 'month';
-  renderCalendar();
-});
-
-document.getElementById('calPrev').addEventListener('click', () => {
-  if (calViewMode==='week') { calMonth--; if(calMonth<0){calMonth=11;calYear--;} }
-  else { calMonth--; if(calMonth<0){calMonth=11;calYear--;} }
-  renderCalendar(); renderChart();
-});
-
-document.getElementById('calNext').addEventListener('click', () => {
-  if (calViewMode==='week') { calMonth++; if(calMonth>11){calMonth=0;calYear++;} }
-  else { calMonth++; if(calMonth>11){calMonth=0;calYear++;} }
-  renderCalendar(); renderChart();
-});
-
-/* ---------- SVG 折线图 ---------- */
+function renderAccounting(){updateBalanceCards();populateMonthFilter();renderChart();applyTransactionFilters();}
 function renderChart() {
   const svg = document.getElementById('spendingChart');
   const empty = document.getElementById('chartEmpty');
@@ -488,8 +367,6 @@ document.getElementById('saveTransactionBtn').addEventListener('click',()=>{
 });
 
 document.getElementById('deleteTransactionBtn').addEventListener('click',()=>{if(!editingTxId)return;if(!confirm('确定删除这条账单吗？'))return;transactions=transactions.filter(t=>t.id!==editingTxId);saveTransactions();closeTransactionModal();renderAccounting();});
-
-function renderAccounting(){updateBalanceCards();populateMonthFilter();renderCalendar();renderChart();applyTransactionFilters();}
 
 /* ================================================================
    四、日历提醒 (.ics)

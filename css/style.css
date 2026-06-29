@@ -1,116 +1,149 @@
 /* ================================================================
-   个人空间 v5.0 — Layered Glassmorphism + Depth
-   半透明渐变 · 层次阴影 · 圆角毛玻璃 · 自然交互
+   个人空间 v6.0 — Lavender Dream / Midnight Orchid
+   参考风格：柔和薰衣草紫 × 淡蓝光感 × OLED 暗夜紫晶
+   UI/UX Pro Max: Aurora gradients + Claymorphism soft shadows
    ================================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 /* ================================================================
-   LIGHT THEME — 日间
+   LIGHT — 薰衣草之梦 Lavender Dream
    ================================================================ */
 :root {
-  --accent:#2563EB; --accent-hover:#1D4ED8;
-  --accent-soft:rgba(37,99,235,.10); --accent-glow:rgba(37,99,235,.30);
-  --green:#059669; --green-soft:rgba(5,150,105,.10);
-  --red:#DC2626; --red-soft:rgba(220,38,38,.08);
-  --amber:#D97706; --amber-soft:rgba(217,119,6,.10);
-  --purple:#7C3AEd; --cyan:#0891B2;
+  --accent:#8B5CF6;
+  --accent-hover:#7C3AED;
+  --accent-soft:rgba(139,92,246,.10);
+  --accent-glow:rgba(139,92,246,.28);
+  --accent-light:#C4B5FD;
 
-  /* 层次化表面 — 越往下越透明 */
-  --bg-base:#F0F2F8;
-  --bg-float-1:rgba(255,255,255,.55);
-  --bg-float-2:rgba(255,255,255,.40);
-  --bg-float-3:rgba(255,255,255,.28);
+  --pink:#EC4899;
+  --pink-soft:rgba(236,72,153,.08);
+  --blue-soft:rgba(99,102,241,.08);
+  --green:#059669;
+  --green-soft:rgba(5,150,105,.08);
+  --red:#DC2626;
+  --red-soft:rgba(220,38,38,.06);
+  --amber:#D97706;
+  --amber-soft:rgba(217,119,6,.08);
+
+  /* 表面层次 */
+  --bg-base:#F8F6FA;
+  --bg-float-1:rgba(255,255,255,.60);
+  --bg-float-2:rgba(255,255,255,.44);
+  --bg-float-3:rgba(255,255,255,.30);
 
   /* 毛玻璃 */
-  --glass-bg:rgba(255,255,255,.52);
-  --glass-bg-strong:rgba(255,255,255,.68);
-  --glass-border:rgba(255,255,255,.40);
-  --glass-border-strong:rgba(255,255,255,.60);
-  --glass-blur:28px;
-  --glass-saturate:170%;
+  --glass-bg:rgba(255,255,255,.55);
+  --glass-bg-strong:rgba(255,255,255,.70);
+  --glass-border:rgba(196,181,253,.35);
+  --glass-border-strong:rgba(196,181,253,.55);
+  --glass-blur:26px;
+  --glass-saturate:165%;
 
-  /* 多层阴影 — 营造浮动深度 */
-  --shadow-1:0 1px 2px rgba(0,0,0,.04);
-  --shadow-2:0 2px 6px rgba(0,0,0,.05),0 0 0 .5px rgba(0,0,0,.04);
-  --shadow-3:0 4px 16px rgba(0,0,0,.06),0 1px 4px rgba(0,0,0,.04),0 0 0 .5px rgba(0,0,0,.03);
-  --shadow-4:0 8px 30px rgba(0,0,0,.07),0 2px 8px rgba(0,0,0,.05),0 0 0 .5px rgba(0,0,0,.03);
-  --shadow-5:0 16px 48px rgba(0,0,0,.09),0 4px 12px rgba(0,0,0,.06),0 0 0 .5px rgba(0,0,0,.03);
-  --shadow-glow:0 4px 20px var(--accent-glow);
+  /* 阴影 — 薰衣草色调 */
+  --shadow-1:0 1px 2px rgba(139,92,246,.04);
+  --shadow-2:0 2px 6px rgba(139,92,246,.05),0 0 0 .5px rgba(139,92,246,.04);
+  --shadow-3:0 4px 18px rgba(139,92,246,.06),0 1px 4px rgba(139,92,246,.04),0 0 0 .5px rgba(139,92,246,.03);
+  --shadow-4:0 8px 32px rgba(139,92,246,.08),0 2px 8px rgba(139,92,246,.05),0 0 0 .5px rgba(139,92,246,.03);
+  --shadow-5:0 16px 48px rgba(139,92,246,.10),0 4px 12px rgba(139,92,246,.06),0 0 0 .5px rgba(139,92,246,.03);
+  --shadow-glow:0 4px 22px rgba(139,92,246,.32);
 
-  --text-primary:#0F172A; --text-secondary:#475569; --text-muted:#94A3B8;
-  --text-inverse:#F8FAFC;
-  --border:rgba(0,0,0,.05); --border-strong:rgba(0,0,0,.09);
+  --text-primary:#1E1B2E;
+  --text-secondary:#4A4458;
+  --text-muted:#958CA5;
+  --text-inverse:#F8F6FA;
 
-  --gradient-accent:linear-gradient(135deg,#2563EB,#7C3AED);
-  --gradient-accent-2:linear-gradient(135deg,#06B6D4,#2563EB);
-  --gradient-warm:linear-gradient(135deg,#F97316,#EF4444);
-  --gradient-cool:linear-gradient(135deg,#06B6D4,#2563EB);
+  --border:rgba(139,92,246,.07);
+  --border-strong:rgba(139,92,246,.12);
 
-  /* 极光背景 */
-  --aurora-1:radial-gradient(ellipse 70% 50% at 15% 5%,rgba(37,99,235,.10) 0%,transparent 55%);
-  --aurora-2:radial-gradient(ellipse 55% 60% at 85% 85%,rgba(124,58,237,.08) 0%,transparent 55%);
-  --aurora-3:radial-gradient(ellipse 45% 40% at 55% 45%,rgba(6,182,212,.05) 0%,transparent 55%);
+  --gradient-accent:linear-gradient(135deg,#8B5CF6,#A78BFA);
+  --gradient-accent-2:linear-gradient(135deg,#C4B5FD,#8B5CF6);
+  --gradient-pink:linear-gradient(135deg,#EC4899,#F472B6);
+  --gradient-cool:linear-gradient(135deg,#818CF8,#8B5CF6);
+  --gradient-warm:linear-gradient(135deg,#F97316,#EC4899);
 
-  --header-bg:rgba(240,242,248,.65);
-  --tab-bar-bg:rgba(255,255,255,.45);
-  --overlay-bg:rgba(15,23,42,.30);
-  --toast-bg:#0F172A; --toast-text:#F8FAFC;
-  --divider:rgba(0,0,0,.05);
-  --tab-bar-shadow:0 -2px 20px rgba(0,0,0,.06),0 -1px 4px rgba(0,0,0,.04);
+  /* 极光 */
+  --aurora-1:radial-gradient(ellipse 70% 50% at 15% 5%,rgba(196,181,253,.25) 0%,transparent 55%);
+  --aurora-2:radial-gradient(ellipse 55% 60% at 85% 85%,rgba(236,72,153,.12) 0%,transparent 55%);
+  --aurora-3:radial-gradient(ellipse 45% 40% at 55% 45%,rgba(139,92,246,.10) 0%,transparent 55%);
+
+  --header-bg:rgba(248,246,250,.68);
+  --tab-bar-bg:rgba(255,255,255,.48);
+  --overlay-bg:rgba(30,27,46,.30);
+  --toast-bg:#1E1B2E;
+  --toast-text:#F8F6FA;
+  --divider:rgba(139,92,246,.06);
+  --tab-bar-shadow:0 -2px 20px rgba(139,92,246,.07),0 -1px 4px rgba(139,92,246,.04);
 }
 
 /* ================================================================
-   DARK THEME — 夜间
+   DARK — 午夜兰花 Midnight Orchid
    ================================================================ */
 [data-theme="dark"] {
-  --accent:#3B82F6; --accent-hover:#60A5FA;
-  --accent-soft:rgba(59,130,246,.14); --accent-glow:rgba(59,130,246,.40);
-  --green:#34D399; --green-soft:rgba(52,211,153,.12);
-  --red:#F87171; --red-soft:rgba(248,113,113,.10);
-  --amber:#FBBF24; --amber-soft:rgba(251,191,36,.12);
+  --accent:#A78BFA;
+  --accent-hover:#C4B5FD;
+  --accent-soft:rgba(167,139,250,.14);
+  --accent-glow:rgba(167,139,250,.35);
+  --accent-light:#8B5CF6;
 
-  --bg-base:#080810;
-  --bg-float-1:rgba(20,20,36,.55);
-  --bg-float-2:rgba(20,20,36,.40);
-  --bg-float-3:rgba(20,20,36,.28);
+  --pink:#F472B6;
+  --pink-soft:rgba(244,114,182,.10);
+  --blue-soft:rgba(129,140,248,.10);
+  --green:#34D399;
+  --green-soft:rgba(52,211,153,.10);
+  --red:#F87171;
+  --red-soft:rgba(248,113,113,.08);
+  --amber:#FBBF24;
+  --amber-soft:rgba(251,191,36,.10);
 
-  --glass-bg:rgba(18,18,32,.50);
-  --glass-bg-strong:rgba(22,22,40,.65);
-  --glass-border:rgba(255,255,255,.06);
-  --glass-border-strong:rgba(255,255,255,.10);
+  --bg-base:#06040A;
+  --bg-float-1:rgba(22,18,32,.55);
+  --bg-float-2:rgba(18,14,28,.40);
+  --bg-float-3:rgba(14,10,24,.30);
+
+  --glass-bg:rgba(20,16,34,.50);
+  --glass-bg-strong:rgba(24,20,40,.65);
+  --glass-border:rgba(167,139,250,.08);
+  --glass-border-strong:rgba(167,139,250,.14);
   --glass-blur:30px;
+  --glass-saturate:180%;
 
-  --shadow-1:0 1px 2px rgba(0,0,0,.15);
-  --shadow-2:0 2px 6px rgba(0,0,0,.20),0 0 0 .5px rgba(255,255,255,.04);
-  --shadow-3:0 4px 16px rgba(0,0,0,.25),0 1px 4px rgba(0,0,0,.15),0 0 0 .5px rgba(255,255,255,.04);
-  --shadow-4:0 8px 30px rgba(0,0,0,.30),0 2px 8px rgba(0,0,0,.20),0 0 0 .5px rgba(255,255,255,.04);
-  --shadow-5:0 16px 48px rgba(0,0,0,.40),0 4px 12px rgba(0,0,0,.25),0 0 0 .5px rgba(255,255,255,.04);
-  --shadow-glow:0 4px 24px var(--accent-glow);
+  --shadow-1:0 1px 2px rgba(0,0,0,.20);
+  --shadow-2:0 2px 6px rgba(0,0,0,.25),0 0 0 .5px rgba(167,139,250,.05);
+  --shadow-3:0 4px 18px rgba(0,0,0,.30),0 1px 4px rgba(0,0,0,.20),0 0 0 .5px rgba(167,139,250,.05);
+  --shadow-4:0 8px 32px rgba(0,0,0,.40),0 2px 8px rgba(0,0,0,.25),0 0 0 .5px rgba(167,139,250,.05);
+  --shadow-5:0 16px 48px rgba(0,0,0,.50),0 4px 12px rgba(0,0,0,.30),0 0 0 .5px rgba(167,139,250,.05);
+  --shadow-glow:0 4px 24px rgba(167,139,250,.40);
 
-  --text-primary:#F1F5F9; --text-secondary:#94A3B8; --text-muted:#64748B;
-  --text-inverse:#0F172A;
-  --border:rgba(255,255,255,.05); --border-strong:rgba(255,255,255,.09);
+  --text-primary:#F1EEF9;
+  --text-secondary:#AFA3C4;
+  --text-muted:#6B5E7E;
+  --text-inverse:#1E1B2E;
 
-  --gradient-accent:linear-gradient(135deg,#3B82F6,#8B5CF6);
-  --gradient-accent-2:linear-gradient(135deg,#22D3EE,#3B82F6);
-  --gradient-warm:linear-gradient(135deg,#FB923C,#F87171);
-  --gradient-cool:linear-gradient(135deg,#22D3EE,#3B82F6);
+  --border:rgba(167,139,250,.06);
+  --border-strong:rgba(167,139,250,.10);
 
-  --aurora-1:radial-gradient(ellipse 70% 50% at 15% 5%,rgba(59,130,246,.14) 0%,transparent 55%);
-  --aurora-2:radial-gradient(ellipse 55% 60% at 85% 85%,rgba(139,92,246,.10) 0%,transparent 55%);
-  --aurora-3:radial-gradient(ellipse 45% 40% at 55% 45%,rgba(34,211,238,.06) 0%,transparent 55%);
+  --gradient-accent:linear-gradient(135deg,#A78BFA,#C4B5FD);
+  --gradient-accent-2:linear-gradient(135deg,#C4B5FD,#A78BFA);
+  --gradient-pink:linear-gradient(135deg,#F472B6,#FDA4AF);
+  --gradient-cool:linear-gradient(135deg,#818CF8,#A78BFA);
+  --gradient-warm:linear-gradient(135deg,#FB923C,#F472B6);
 
-  --header-bg:rgba(8,8,16,.65);
-  --tab-bar-bg:rgba(14,14,28,.45);
+  --aurora-1:radial-gradient(ellipse 70% 50% at 15% 5%,rgba(167,139,250,.20) 0%,transparent 55%);
+  --aurora-2:radial-gradient(ellipse 55% 60% at 85% 85%,rgba(244,114,182,.10) 0%,transparent 55%);
+  --aurora-3:radial-gradient(ellipse 45% 40% at 55% 45%,rgba(139,92,246,.08) 0%,transparent 55%);
+
+  --header-bg:rgba(6,4,10,.68);
+  --tab-bar-bg:rgba(16,12,26,.48);
   --overlay-bg:rgba(0,0,0,.55);
-  --toast-bg:#F1F5F9; --toast-text:#0F172A;
-  --divider:rgba(255,255,255,.05);
-  --tab-bar-shadow:0 -2px 24px rgba(0,0,0,.35),0 -1px 4px rgba(0,0,0,.20);
+  --toast-bg:#F1EEF9;
+  --toast-text:#1E1B2E;
+  --divider:rgba(167,139,250,.06);
+  --tab-bar-shadow:0 -2px 24px rgba(0,0,0,.40),0 -1px 4px rgba(0,0,0,.25);
 }
 
 /* ================================================================
-   RESET & BASE
+   RESET
    ================================================================ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;color-scheme:light}
@@ -118,22 +151,20 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;color-scheme:light}
 body{
   font-family:'Space Grotesk',-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;
   font-size:15px;font-weight:400;line-height:1.6;
-  color:var(--text-primary);
-  background:var(--bg-base);
+  color:var(--text-primary);background:var(--bg-base);
   min-height:100vh;min-height:100dvh;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
   -webkit-tap-highlight-color:transparent;
   accent-color:var(--accent);
-  transition:background .5s ease,color .5s ease;
+  transition:background .6s ease,color .6s ease;
   padding-top:56px;
   padding-bottom:calc(82px + env(safe-area-inset-bottom,0px));
   display:flex;flex-direction:column;
 }
-/* 极光背景层 */
 body::before{
   content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   background:var(--aurora-1),var(--aurora-2),var(--aurora-3);
-  transition:background .8s ease;
+  transition:background 1s ease;
 }
 
 h1,h2,h3,h4{font-family:'Archivo',-apple-system,'PingFang SC',sans-serif;font-weight:600;letter-spacing:-.01em;line-height:1.25;color:var(--text-primary)}
@@ -143,7 +174,7 @@ p{color:var(--text-secondary)}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 
 /* ================================================================
-   TOP HEADER — 极薄毛玻璃
+   HEADER
    ================================================================ */
 .app-header{
   position:fixed;top:0;left:0;right:0;z-index:30;
@@ -153,7 +184,7 @@ p{color:var(--text-secondary)}
   backdrop-filter:blur(18px) saturate(160%);
   -webkit-backdrop-filter:blur(18px) saturate(160%);
   border-bottom:1px solid var(--glass-border);
-  transition:background .5s ease,border-color .5s ease;
+  transition:background .6s ease,border-color .6s ease;
 }
 .header-left{display:flex;align-items:center;gap:10px}
 .header-title{font-family:'Archivo',-apple-system,'PingFang SC',sans-serif;font-size:17px;font-weight:700;color:var(--text-primary)}
@@ -169,23 +200,22 @@ p{color:var(--text-secondary)}
 .theme-btn:active{transform:scale(.9)}
 
 /* ================================================================
-   MAIN CONTENT AREA
+   MAIN CONTENT
    ================================================================ */
 .main-content{
   flex:1;position:relative;z-index:1;
-  padding:18px 14px;
-  max-width:700px;width:100%;margin:0 auto;
+  padding:18px 14px;max-width:700px;width:100%;margin:0 auto;
 }
 .tab-content{display:none}
 .tab-content.active{display:block;animation:fadeIn .35s cubic-bezier(.4,0,.2,1)}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* ================================================================
-   BUTTONS — 层次化
+   BUTTONS
    ================================================================ */
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:6px;
-  padding:10px 18px;border-radius:14px;
+  padding:10px 18px;border-radius:16px;
   border:1px solid var(--border-strong);background:var(--bg-float-2);
   cursor:pointer;font-family:'Space Grotesk',-apple-system,'PingFang SC',sans-serif;
   font-size:14px;font-weight:500;color:var(--text-secondary);
@@ -204,14 +234,14 @@ p{color:var(--text-secondary)}
 .btn-primary:active{transform:scale(.96)}
 .btn-danger{background:transparent;color:var(--red);border-color:var(--red)}
 .btn-danger:hover{background:var(--red-soft)}
-.btn-sm{padding:7px 13px;font-size:13px;min-height:38px;border-radius:10px}
+.btn-sm{padding:7px 13px;font-size:13px;min-height:38px;border-radius:12px}
 .btn-calendar{background:var(--amber-soft);border:1px solid var(--amber);font-weight:500;width:100%;margin-top:8px;justify-content:center}
 [data-theme="light"] .btn-calendar{color:#92400E;border-color:rgba(217,119,6,.3)}
 [data-theme="dark"] .btn-calendar{color:#FBBF24;border-color:rgba(251,191,36,.2)}
 .btn-calendar:hover{filter:brightness(1.1)}
 
 /* ================================================================
-   CARDS — 三层深度毛玻璃
+   CARDS — Claymorphism 软毛玻璃
    ================================================================ */
 .card{
   background:var(--glass-bg);
@@ -224,30 +254,21 @@ p{color:var(--text-secondary)}
   margin-bottom:16px;
 }
 .card:hover{border-color:var(--glass-border-strong);box-shadow:var(--shadow-4)}
-/* 第二层卡片 — 更透明 */
-.card-inner{
-  background:var(--bg-float-2);
-  backdrop-filter:blur(18px) saturate(150%);
-  -webkit-backdrop-filter:blur(18px) saturate(150%);
-  border-radius:18px;padding:18px;
-  border:1px solid var(--glass-border);
-  box-shadow:var(--shadow-2);
-}
 
 /* ================================================================
    PROFILE
    ================================================================ */
-.profile-card{padding:30px 26px}
-.profile-header{display:flex;align-items:center;gap:26px;padding-bottom:26px;border-bottom:1px solid var(--divider);margin-bottom:26px}
+.profile-card{padding:28px 24px}
+.profile-header{display:flex;align-items:center;gap:24px;padding-bottom:24px;border-bottom:1px solid var(--divider);margin-bottom:24px}
 .avatar{display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0}
 .avatar-xl{width:80px;height:80px;font-size:38px;background:var(--bg-float-1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);box-shadow:var(--shadow-3)}
 .profile-info h2{font-size:24px;font-weight:700;margin-bottom:2px}
 .profile-info>p{font-size:14px;color:var(--text-muted)}
-.profile-details{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:26px}
+.profile-details{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:24px}
 .detail-group h4{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
 .detail-group p{font-size:14px;color:var(--text-secondary);margin-bottom:4px}
 .skill-tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{background:var(--accent-soft);color:var(--accent);padding:5px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid rgba(37,99,235,.15);box-shadow:var(--shadow-1)}
+.tag{background:var(--accent-soft);color:var(--accent);padding:5px 14px;border-radius:20px;font-size:13px;font-weight:500;border:1px solid var(--glass-border-strong);box-shadow:var(--shadow-1)}
 
 /* ================================================================
    TOOLBAR
@@ -255,7 +276,7 @@ p{color:var(--text-secondary)}
 .toolbar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
 .search-input{
   flex:1;min-width:140px;padding:10px 15px;
-  border:1px solid var(--border-strong);border-radius:14px;
+  border:1px solid var(--border-strong);border-radius:16px;
   font-family:'Space Grotesk',-apple-system,'PingFang SC',sans-serif;font-size:14px;outline:none;
   background:var(--bg-float-2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   color:var(--text-primary);min-height:44px;
@@ -264,7 +285,7 @@ p{color:var(--text-secondary)}
 .search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft),var(--shadow-2)}
 .search-input::placeholder{color:var(--text-muted)}
 .filter-select{
-  padding:10px 14px;border:1px solid var(--border-strong);border-radius:14px;
+  padding:10px 14px;border:1px solid var(--border-strong);border-radius:16px;
   font-family:'Space Grotesk',-apple-system,'PingFang SC',sans-serif;font-size:14px;outline:none;
   background:var(--bg-float-2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
   cursor:pointer;color:var(--text-secondary);min-height:44px;
@@ -273,7 +294,7 @@ p{color:var(--text-secondary)}
 .filter-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 
 /* ================================================================
-   记事卡片网格（原备忘录）
+   记事卡片
    ================================================================ */
 .memo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
 .memo-card{
@@ -304,7 +325,7 @@ p{color:var(--text-secondary)}
 .empty-hint{font-size:13px!important;color:var(--text-muted)!important;font-weight:400!important}
 
 /* ================================================================
-   BALANCE CARDS — 渐变色顶部 + 毛玻璃体
+   BALANCE CARDS
    ================================================================ */
 .balance-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
 .balance-card{
@@ -328,62 +349,13 @@ p{color:var(--text-secondary)}
 .balance-card.balance .balance-amount{background:var(--gradient-accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
 /* ================================================================
-   CALENDAR — 可折叠（周/月）
+   CHART
    ================================================================ */
-.calendar-card{padding:18px}
-.calendar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.cal-month-label{font-size:16px!important;font-weight:700!important;color:var(--text-primary)!important;text-transform:none!important;letter-spacing:-.01em!important}
-.cal-nav-group{display:flex;align-items:center;gap:6px}
-.cal-nav{
-  width:34px;height:34px;border-radius:50%;border:1px solid var(--border-strong);
-  background:var(--bg-float-2);cursor:pointer;font-size:13px;
-  display:flex;align-items:center;justify-content:center;
-  color:var(--text-secondary);transition:all .15s ease;
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-}
-.cal-nav:hover{background:var(--bg-float-1);color:var(--text-primary);box-shadow:var(--shadow-2)}
-.cal-toggle{
-  padding:6px 14px;border-radius:20px;border:1px solid var(--glass-border-strong);
-  background:var(--bg-float-2);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  font-family:'Space Grotesk',-apple-system,'PingFang SC',sans-serif;
-  font-size:12px;font-weight:600;cursor:pointer;color:var(--text-secondary);
-  transition:all .2s ease;min-height:34px;box-shadow:var(--shadow-1);
-}
-.cal-toggle:hover{background:var(--bg-float-1);color:var(--text-primary);box-shadow:var(--shadow-2)}
-.cal-toggle:active{transform:scale(.95)}
-
-.calendar-weekdays,.calendar-days{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;gap:2px}
-.calendar-weekdays{font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px;padding:0 2px}
-.calendar-weekdays span{padding:5px 0}
-.calendar-days{min-height:140px;transition:min-height .3s ease}
-.calendar-days.expanded{min-height:200px}
-
-.cal-day{
-  aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  border-radius:14px;font-size:14px;font-weight:500;cursor:pointer;
-  color:var(--text-primary);position:relative;transition:all .15s ease;
-  min-height:36px;
-}
-.cal-day:hover{background:var(--border);box-shadow:var(--shadow-1)}
-.cal-day.other-month{color:var(--text-muted);opacity:.25;pointer-events:none}
-.cal-day.today{font-weight:700;background:var(--accent-soft);color:var(--accent);box-shadow:var(--shadow-2)}
-.cal-day.today::after{content:'';position:absolute;bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--accent)}
-.cal-dots{display:flex;gap:2px;position:absolute;top:4px}
-.cal-dot{width:5px;height:5px;border-radius:50%;box-shadow:0 0 3px currentColor}
-.cal-dot.expense{background:var(--red)}
-.cal-dot.income{background:var(--green)}
-.calendar-legend{display:flex;gap:18px;margin-top:10px;font-size:12px;color:var(--text-muted);justify-content:center;padding-top:10px;border-top:1px solid var(--divider)}
-.calendar-legend span{display:flex;align-items:center;gap:5px}
-.calendar-legend .cal-dot{width:8px;height:8px;position:static;box-shadow:none}
-
-/* ================================================================
-   CHART — SVG 折线图
-   ================================================================ */
-.chart-card{padding:24px 20px}
+.chart-card{padding:22px 20px}
 .chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .chart-header h4{font-size:14px!important;font-weight:600!important;text-transform:none!important;letter-spacing:0!important}
 .chart-range{
-  padding:7px 12px;border:1px solid var(--glass-border-strong);border-radius:10px;
+  padding:7px 12px;border:1px solid var(--glass-border-strong);border-radius:12px;
   font-size:12px;background:var(--bg-float-2);color:var(--text-secondary);cursor:pointer;
   font-family:inherit;outline:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   box-shadow:var(--shadow-1);
@@ -393,7 +365,7 @@ p{color:var(--text-secondary)}
 .chart-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:14px}
 
 /* ================================================================
-   TRANSACTION LIST — 半透明行
+   TRANSACTION LIST
    ================================================================ */
 .transaction-list{display:flex;flex-direction:column;gap:4px}
 .transaction-item{
@@ -401,7 +373,7 @@ p{color:var(--text-secondary)}
   background:var(--bg-float-2);
   backdrop-filter:blur(14px) saturate(150%);
   -webkit-backdrop-filter:blur(14px) saturate(150%);
-  border-radius:14px;border:1px solid transparent;gap:14px;
+  border-radius:16px;border:1px solid transparent;gap:14px;
   cursor:pointer;transition:all .18s ease;min-height:54px;
   box-shadow:var(--shadow-1);
 }
@@ -417,7 +389,7 @@ p{color:var(--text-secondary)}
 .tx-amount.income{color:var(--green)}.tx-amount.expense{color:var(--red)}
 
 /* ================================================================
-   MODAL — iOS sheet
+   MODAL
    ================================================================ */
 .modal-overlay{
   display:none;position:fixed;inset:0;background:var(--overlay-bg);
@@ -432,6 +404,8 @@ p{color:var(--text-secondary)}
   box-shadow:var(--shadow-5);animation:slideUp .38s cubic-bezier(.32,.72,0,1);
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
+[data-theme="light"] .modal{background:#FFFFFF}
+[data-theme="dark"] .modal{background:#16121E}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .modal-header{
   display:flex;align-items:center;justify-content:space-between;
@@ -463,7 +437,7 @@ p{color:var(--text-secondary)}
 .form-group input[type="text"],.form-group input[type="email"],.form-group input[type="number"],
 .form-group input[type="date"],.form-group input[type="datetime-local"],
 .form-group textarea,.form-group select{
-  width:100%;padding:10px 14px;border:1px solid var(--border-strong);border-radius:14px;
+  width:100%;padding:10px 14px;border:1px solid var(--border-strong);border-radius:16px;
   font-family:'Space Grotesk',-apple-system,'PingFang SC',sans-serif;font-size:14px;outline:none;
   background:var(--bg-float-2);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   color:var(--text-primary);transition:all .2s ease;
@@ -484,7 +458,7 @@ p{color:var(--text-secondary)}
 
 .type-toggle{display:flex;gap:8px}
 .type-btn{
-  flex:1;padding:10px;border:2px solid var(--border-strong);border-radius:14px;
+  flex:1;padding:10px;border:2px solid var(--border-strong);border-radius:16px;
   background:var(--bg-float-2);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   cursor:pointer;font-family:'Space Grotesk',-apple-system,'PingFang SC',sans-serif;
   font-size:14px;font-weight:500;min-height:44px;transition:all .15s ease;
@@ -494,7 +468,7 @@ p{color:var(--text-secondary)}
 .type-btn[data-type="income"].active{border-color:var(--green);background:var(--green-soft)}
 
 /* ================================================================
-   BOTTOM TAB BAR — 圆角毛玻璃 · 柔和自然
+   BOTTOM TAB BAR — 薰衣草毛玻璃药丸
    ================================================================ */
 .bottom-tabs{
   display:flex;position:fixed;bottom:6px;left:12px;right:12px;z-index:30;
@@ -506,7 +480,7 @@ p{color:var(--text-secondary)}
   padding:6px 8px;
   padding-bottom:calc(6px + env(safe-area-inset-bottom,0px));
   box-shadow:var(--tab-bar-shadow);
-  transition:all .5s ease;
+  transition:all .6s ease;
 }
 .bottom-tab{
   flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;
@@ -526,7 +500,6 @@ p{color:var(--text-secondary)}
 }
 .bottom-tab.active .bt-icon{transform:translateY(-2px)}
 .bottom-tab:active .bt-icon{transform:scale(.82)}
-/* 去掉之前的 pill，改成 active tab 背景色变化 */
 
 /* ================================================================
    TOAST
@@ -544,7 +517,7 @@ p{color:var(--text-secondary)}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%)translateY(18px)}to{opacity:1;transform:translateX(-50%)translateY(0)}}
 
 /* ================================================================
-   RESPONSIVE — Tablet / Desktop
+   RESPONSIVE
    ================================================================ */
 @media(min-width:769px){
   body{padding-bottom:calc(94px + env(safe-area-inset-bottom,0px))}
@@ -552,6 +525,5 @@ p{color:var(--text-secondary)}
   .balance-amount{font-size:28px}
   .memo-grid{grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
   .bottom-tabs{left:auto;right:auto;width:420px;margin:0 auto;bottom:10px;border-radius:26px}
-  .cal-day{font-size:15px}
   .spending-chart{height:220px}
 }
