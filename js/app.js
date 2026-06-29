@@ -11,19 +11,78 @@ const storage = {
 const tabs = document.querySelectorAll('.nav-item');
 const contents = document.querySelectorAll('.tab-content');
 
-tabs.forEach(btn => {
-  btn.addEventListener('click', () => {
-    tabs.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    contents.forEach(c => c.classList.remove('active'));
-    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-    if (btn.dataset.tab === 'accounting') renderAccounting();
+function switchTab(tabName) {
+  tabs.forEach(b => b.classList.remove('active'));
+  contents.forEach(c => c.classList.remove('active'));
+
+  const targetTab = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
+  if (targetTab) targetTab.classList.add('active');
+  document.getElementById('tab-' + tabName).classList.add('active');
+
+  // 同步底部导航栏
+  document.querySelectorAll('.bottom-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === tabName);
   });
+
+  if (tabName === 'accounting') renderAccounting();
+
+  // 移动端：切换页面后关闭侧边栏
+  if (window.innerWidth <= 768) closeMobileSidebar();
+}
+
+tabs.forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
 });
 
-/* ========== 侧边栏折叠 ========== */
-document.getElementById('sidebarToggle').addEventListener('click', () => {
-  document.getElementById('sidebar').classList.toggle('collapsed');
+// 底部导航栏
+document.querySelectorAll('.bottom-tab').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+/* ========== 侧边栏展开/折叠 ========== */
+const sidebar = document.getElementById('sidebar');
+const sidebarToggle = document.getElementById('sidebarToggle');
+
+function updateSidebarToggleIcon() {
+  const isCollapsed = sidebar.classList.contains('collapsed');
+  sidebarToggle.innerHTML = isCollapsed ? '▶' : '◀';
+  sidebarToggle.title = isCollapsed ? '展开菜单' : '收起菜单';
+}
+
+sidebarToggle.addEventListener('click', () => {
+  sidebar.classList.toggle('collapsed');
+  updateSidebarToggleIcon();
+});
+
+// 初始化图标状态
+updateSidebarToggleIcon();
+
+/* ========== 移动端：汉堡菜单 + 遮罩 ========== */
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+function openMobileSidebar() {
+  sidebar.classList.add('open');
+  sidebar.classList.remove('collapsed');
+  sidebarOverlay.classList.add('show');
+  mobileMenuBtn.style.opacity = '0';
+}
+
+function closeMobileSidebar() {
+  sidebar.classList.remove('open');
+  sidebarOverlay.classList.remove('show');
+  mobileMenuBtn.style.opacity = '1';
+}
+
+mobileMenuBtn.addEventListener('click', openMobileSidebar);
+sidebarOverlay.addEventListener('click', closeMobileSidebar);
+
+// 窗口大小变化时重置移动端状态
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 768) {
+    closeMobileSidebar();
+    updateSidebarToggleIcon();
+  }
 });
 
 /* ========== 工具：日期格式化 ========== */
