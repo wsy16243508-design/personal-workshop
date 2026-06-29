@@ -2,8 +2,22 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
   <title>个人空间</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- iOS Safari 全屏模式 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="个人空间">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+  <!-- 主题色 -->
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="mobile-web-app-capable" content="yes">
+
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -302,5 +316,40 @@
   </main>
 
   <script src="js/app.js"></script>
+
+  <!-- 注册 Service Worker（离线缓存） -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('✅ Service Worker 已注册 — 支持离线使用'))
+        .catch(err => console.log('Service Worker 注册失败:', err));
+    }
+  </script>
+
+  <!-- iOS 添加到主屏幕引导 -->
+  <script>
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isStandalone = window.navigator.standalone;
+    if (isIOS && !isStandalone && !localStorage.getItem('pwa-banner-dismissed')) {
+      window.addEventListener('load', () => {
+        const banner = document.createElement('div');
+        banner.id = 'ios-pwa-banner';
+        banner.innerHTML = `
+          <div style="
+            position:fixed;bottom:20px;left:16px;right:16px;
+            background:#1f2937;color:#fff;border-radius:14px;
+            padding:16px 20px;z-index:999;font-size:14px;
+            box-shadow:0 8px 30px rgba(0,0,0,.3);
+            display:flex;align-items:center;gap:12px;
+          ">
+            <span style="font-size:28px;">📱</span>
+            <span style="flex:1;">点击下方 <b>分享按钮</b> → <b>添加到主屏幕</b>，像 App 一样使用</span>
+            <button onclick="this.parentElement.remove();localStorage.setItem('pwa-banner-dismissed','1')"
+              style="background:transparent;border:none;color:#fff;font-size:20px;cursor:pointer;padding:4px 8px;">✕</button>
+          </div>`;
+        document.body.appendChild(banner);
+      });
+    }
+  </script>
 </body>
 </html>
