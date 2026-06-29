@@ -57,6 +57,17 @@ sidebarToggle.addEventListener('click', () => {
 // 初始化图标状态
 updateSidebarToggleIcon();
 
+// 折叠状态下，点击侧边栏任意空白处即可展开（桌面端）
+sidebar.addEventListener('click', (e) => {
+  if (window.innerWidth > 768 && sidebar.classList.contains('collapsed')) {
+    // 不拦截导航按钮的点击
+    if (!e.target.closest('.nav-item')) {
+      sidebar.classList.remove('collapsed');
+      updateSidebarToggleIcon();
+    }
+  }
+});
+
 /* ========== 移动端：汉堡菜单 + 遮罩 ========== */
 const mobileMenuBtn = document.getElementById('mobileMenuBtn');
 const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -78,11 +89,28 @@ mobileMenuBtn.addEventListener('click', openMobileSidebar);
 sidebarOverlay.addEventListener('click', closeMobileSidebar);
 
 // 窗口大小变化时重置移动端状态
+let wasMobile = window.innerWidth <= 768;
 window.addEventListener('resize', () => {
-  if (window.innerWidth > 768) {
+  const isMobile = window.innerWidth <= 768;
+  if (isMobile && !wasMobile) {
+    // Desktop → Mobile: close sidebar
     closeMobileSidebar();
+  }
+  if (!isMobile && wasMobile) {
+    // Mobile → Desktop: ensure sidebar starts open
+    sidebar.classList.remove('open', 'collapsed');
+    sidebarOverlay.classList.remove('show');
+    mobileMenuBtn.style.opacity = '1';
     updateSidebarToggleIcon();
   }
+  wasMobile = isMobile;
+});
+
+/* ========== 无障碍：prefers-reduced-motion ========== */
+const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+let prefersReducedMotion = motionQuery.matches;
+motionQuery.addEventListener('change', (e) => {
+  prefersReducedMotion = e.matches;
 });
 
 /* ========== 工具：日期格式化 ========== */

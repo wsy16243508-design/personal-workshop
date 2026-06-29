@@ -15,8 +15,13 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 
   <!-- 主题色 -->
-  <meta name="theme-color" content="#4f46e5">
+  <meta name="theme-color" content="#2563EB">
   <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Google Fonts: Archivo + Space Grotesk (preconnect for performance) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -38,14 +43,16 @@
         <span class="nav-icon">💰</span> 记账本
       </button>
     </nav>
-    <button class="sidebar-toggle" id="sidebarToggle" title="收起菜单">◀</button>
   </aside>
+
+  <!-- 侧边栏折叠/展开按钮 -->
+  <button class="sidebar-toggle" id="sidebarToggle" title="收起菜单" aria-label="收起侧边栏菜单">◀</button>
 
   <!-- 移动端：侧边栏遮罩 -->
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <!-- 移动端：汉堡菜单按钮 -->
-  <button class="mobile-menu-btn" id="mobileMenuBtn" title="菜单">☰</button>
+  <button class="mobile-menu-btn" id="mobileMenuBtn" title="菜单" aria-label="打开导航菜单">☰</button>
 
   <!-- 移动端：底部导航栏 -->
   <nav class="bottom-tabs" id="bottomTabs">
@@ -105,7 +112,7 @@
         <div class="modal">
           <div class="modal-header">
             <h3>编辑个人资料</h3>
-            <button class="modal-close" id="closeProfileModal">✕</button>
+            <button class="modal-close" id="closeProfileModal" aria-label="关闭弹窗">✕</button>
           </div>
           <div class="modal-body">
             <div class="form-group">
@@ -181,7 +188,7 @@
         <div class="modal">
           <div class="modal-header">
             <h3 id="memoModalTitle">新建备忘</h3>
-            <button class="modal-close" id="closeMemoModal">✕</button>
+            <button class="modal-close" id="closeMemoModal" aria-label="关闭弹窗">✕</button>
           </div>
           <div class="modal-body">
             <div class="form-group">
@@ -289,7 +296,7 @@
         <div class="modal">
           <div class="modal-header">
             <h3 id="transactionModalTitle">记一笔</h3>
-            <button class="modal-close" id="closeTransactionModal">✕</button>
+            <button class="modal-close" id="closeTransactionModal" aria-label="关闭弹窗">✕</button>
           </div>
           <div class="modal-body">
             <div class="form-group">
