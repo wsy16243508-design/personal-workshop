@@ -318,15 +318,18 @@ function applyTransactionFilters(filterDate=null) {
   if(filtered.length===0){empty.style.display='block'}
   else{empty.style.display='none';
     filtered.forEach(t=>{
-      const isIncome=t.type==='income', icon=isIncome?'📈':getCategoryIcon(t.category), sign=isIncome?'':'-';
+      const isIncome=t.type==='income', sign=isIncome?'':'-';
+      const arrowSvg = isIncome
+        ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>'
+        : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>';
       const item=document.createElement('div');item.className='transaction-item';
-      item.innerHTML=`<div class="tx-icon ${t.type}">${icon}</div><div class="tx-info"><div class="tx-category">${t.category}</div><div class="tx-note">${escapeHtml(t.note||'')||'&nbsp;'}</div></div><div class="tx-date">${formatDate(t.date)}</div><div class="tx-amount ${t.type}">${sign}¥${t.amount.toFixed(2)}</div>`;
+      item.innerHTML=`<div class="tx-icon ${t.type}">${arrowSvg}</div><div class="tx-info"><div class="tx-category">${t.category}</div><div class="tx-note">${escapeHtml(t.note||'')||'&nbsp;'}</div></div><div class="tx-date">${formatDate(t.date)}</div><div class="tx-amount ${t.type}">${sign}¥${t.amount.toFixed(2)}</div>`;
       item.addEventListener('click',()=>openTransactionEditor(t.id)); list.appendChild(item);
     });
   }
 }
 
-function getCategoryIcon(cat){ const map={'餐饮':'🍔','交通':'🚗','购物':'🛒','娱乐':'🎮','居住':'🏠','工资':'💼','兼职':'💡'}; return map[cat]||'💰'; }
+function getCategoryIcon(cat){ const map={'餐饮':'🍽','交通':'🚖','购物':'🛍','娱乐':'🎬','居住':'🏡','工资':'💵','兼职':'🔧'}; return map[cat]||'📌'; }
 
 document.getElementById('monthFilter').addEventListener('change',()=>applyTransactionFilters());
 document.getElementById('typeFilter').addEventListener('change',()=>applyTransactionFilters());

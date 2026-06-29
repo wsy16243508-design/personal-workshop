@@ -93,9 +93,18 @@
     <section class="tab-content" id="tab-accounting">
       <!-- 余额卡片 -->
       <div class="balance-cards">
-        <div class="balance-card income"><span class="balance-label">📈 总收入</span><span class="balance-amount" id="totalIncome">¥0.00</span></div>
-        <div class="balance-card expense"><span class="balance-label">📉 总支出</span><span class="balance-amount" id="totalExpense">¥0.00</span></div>
-        <div class="balance-card balance"><span class="balance-label">💎 结余</span><span class="balance-amount" id="totalBalance">¥0.00</span></div>
+        <div class="balance-card income">
+          <span class="balance-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg> 总收入</span>
+          <span class="balance-amount" id="totalIncome">¥0.00</span>
+        </div>
+        <div class="balance-card expense">
+          <span class="balance-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> 总支出</span>
+          <span class="balance-amount" id="totalExpense">¥0.00</span>
+        </div>
+        <div class="balance-card balance">
+          <span class="balance-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.56 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg> 结余</span>
+          <span class="balance-amount" id="totalBalance">¥0.00</span>
+        </div>
       </div>
 
       <!-- 每日支出折线图 -->
@@ -130,7 +139,7 @@
         <div class="modal">
           <div class="modal-header"><h3 id="transactionModalTitle">记一笔</h3><button class="modal-close" id="closeTransactionModal" aria-label="关闭弹窗">✕</button></div>
           <div class="modal-body">
-            <div class="form-group"><label>类型</label><div class="type-toggle"><button class="type-btn active" data-type="expense">🔴 支出</button><button class="type-btn" data-type="income">🟢 收入</button></div></div>
+            <div class="form-group"><label>类型</label><div class="type-toggle"><button class="type-btn active" data-type="expense"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> 支出</button><button class="type-btn" data-type="income"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg> 收入</button></div></div>
             <div class="form-group"><label>金额</label><input type="number" id="transactionAmount" placeholder="0.00" step="0.01" min="0"></div>
             <div class="form-group"><label>分类</label><select id="transactionCategory"><optgroup label="收入分类"><option value="工资">工资</option><option value="兼职">兼职</option><option value="其他收入">其他收入</option></optgroup><optgroup label="支出分类"><option value="餐饮" selected>餐饮</option><option value="交通">交通</option><option value="购物">购物</option><option value="娱乐">娱乐</option><option value="居住">居住</option><option value="其他支出">其他支出</option></optgroup></select></div>
             <div class="form-group"><label>日期</label><input type="date" id="transactionDate"></div>
@@ -152,11 +161,11 @@
           </div>
         </div>
         <div class="profile-details">
-          <div class="detail-group"><h4>💬 QQ</h4><p id="displayQq">未填写</p></div>
-          <div class="detail-group"><h4>🎯 近期目标</h4><p id="displayGoal">未填写</p></div>
-          <div class="detail-group"><h4>❤️ 爱好</h4><div class="skill-tags" id="displayHobbies"><span class="tag">未填写</span></div></div>
+          <div class="detail-group"><h4><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> QQ</h4><p id="displayQq">未填写</p></div>
+          <div class="detail-group"><h4><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> 近期目标</h4><p id="displayGoal">未填写</p></div>
+          <div class="detail-group"><h4><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> 爱好</h4><div class="skill-tags" id="displayHobbies"><span class="tag">未填写</span></div></div>
         </div>
-        <button class="btn btn-primary" id="editProfileBtn" style="margin-top:26px;">✏️ 编辑资料</button>
+        <button class="btn btn-primary" id="editProfileBtn" style="margin-top:26px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> 编辑资料</button>
       </div>
 
       <!-- 编辑资料弹窗 -->
