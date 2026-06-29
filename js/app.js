@@ -1,3 +1,62 @@
+/* ========== 日夜模式切换 ========== */
+const THEME_KEY = 'personal_site_theme';
+const html = document.documentElement;
+
+function getSystemTheme() {
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function getTheme() {
+  const stored = localStorage.getItem(THEME_KEY);
+  if (stored === 'dark' || stored === 'light') return stored;
+  return getSystemTheme();
+}
+
+function applyTheme(theme) {
+  html.setAttribute('data-theme', theme);
+  const isDark = theme === 'dark';
+  const icon = isDark ? '☀️' : '🌙';
+  const label = isDark ? '日间模式' : '夜间模式';
+
+  // 更新侧边栏按钮
+  const sidebarBtn = document.getElementById('themeToggleSidebar');
+  if (sidebarBtn) {
+    sidebarBtn.querySelector('.theme-icon').textContent = icon;
+    sidebarBtn.childNodes[1] && (sidebarBtn.childNodes[1].textContent = ' ' + label);
+  }
+
+  // 更新移动端按钮
+  const mobileBtn = document.getElementById('themeToggleMobile');
+  if (mobileBtn) { mobileBtn.textContent = icon; }
+
+  // 更新 PWA 主题色
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) {
+    metaTheme.content = isDark ? '#09090F' : '#FAFAFA';
+  }
+}
+
+function toggleTheme() {
+  const current = html.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  localStorage.setItem(THEME_KEY, next);
+  applyTheme(next);
+}
+
+// 初始化主题
+applyTheme(getTheme());
+
+// 绑定切换按钮
+document.getElementById('themeToggleSidebar').addEventListener('click', toggleTheme);
+document.getElementById('themeToggleMobile').addEventListener('click', toggleTheme);
+
+// 监听系统主题变化（用户未手动设置时跟随系统）
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+  if (!localStorage.getItem(THEME_KEY)) {
+    applyTheme(e.matches ? 'dark' : 'light');
+  }
+});
+
 /* ========== 数据存储 ========== */
 const storage = {
   get(key, fallback) {

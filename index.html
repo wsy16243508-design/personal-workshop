@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
@@ -43,6 +43,11 @@
         <span class="nav-icon">💰</span> 记账本
       </button>
     </nav>
+
+    <!-- 日夜模式切换（侧边栏内） -->
+    <button class="theme-toggle-sidebar" id="themeToggleSidebar" title="切换日间/夜间模式">
+      <span class="theme-icon">🌙</span> 夜间模式
+    </button>
   </aside>
 
   <!-- 侧边栏折叠/展开按钮 -->
@@ -53,6 +58,9 @@
 
   <!-- 移动端：汉堡菜单按钮 -->
   <button class="mobile-menu-btn" id="mobileMenuBtn" title="菜单" aria-label="打开导航菜单">☰</button>
+
+  <!-- 移动端：日夜模式切换 -->
+  <button class="theme-toggle-mobile" id="themeToggleMobile" title="切换日间/夜间模式" aria-label="切换日间夜间模式">🌙</button>
 
   <!-- 移动端：底部导航栏 -->
   <nav class="bottom-tabs" id="bottomTabs">
