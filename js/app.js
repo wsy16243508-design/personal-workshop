@@ -85,12 +85,24 @@ function showToast(msg) {
    一、个人资料模块
    ================================================================ */
 const PROFILE_KEY = 'personal_site_profile';
-const defaultProfile = { avatar:'👤',nickname:'你的昵称',qq:'',mbti:'',hobbies:[],goal:'' };
+const defaultProfile = { avatar:'👤',photo:'',nickname:'你的昵称',qq:'',mbti:'',hobbies:[],goal:'' };
 let profile = storage.get(PROFILE_KEY, defaultProfile);
+let pendingPhoto = null; // base64 of selected photo (not yet saved)
 
 function renderProfile() {
-  document.getElementById('profileAvatar').textContent = profile.avatar;
-  document.getElementById('headerAvatar').textContent = profile.avatar;
+  // Avatar: show photo if exists, else emoji
+  const avatarImg = document.getElementById('profileAvatarImg');
+  const avatarEmoji = document.getElementById('profileAvatarEmoji');
+  const headerAvatar = document.getElementById('headerAvatar');
+  if (profile.photo) {
+    avatarImg.src = profile.photo; avatarImg.style.display = 'block';
+    avatarEmoji.style.display = 'none';
+    headerAvatar.innerHTML = `<img src="${profile.photo}" alt="头像" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+  } else {
+    avatarImg.style.display = 'none';
+    avatarEmoji.style.display = 'block'; avatarEmoji.textContent = profile.avatar;
+    headerAvatar.textContent = profile.avatar;
+  }
   document.getElementById('displayNickname').textContent = profile.nickname;
   document.getElementById('headerTitle').textContent = profile.nickname || '个人空间';
   document.getElementById('displayQq').textContent = profile.qq || '未填写';
@@ -101,29 +113,94 @@ function renderProfile() {
   document.getElementById('displayHobbies').innerHTML = hobbies.filter(Boolean).map(s => `<span class="tag">${s.trim()}</span>`).join('') || '<span class="tag">未填写</span>';
 }
 
+function updateAvatarPreview() {
+  const previewImg = document.getElementById('avatarPreviewImg');
+  const previewEmoji = document.getElementById('avatarPreviewEmoji');
+  const removeBtn = document.getElementById('removePhotoBtn');
+  if (pendingPhoto) {
+    previewImg.src = pendingPhoto; previewImg.style.display = 'block';
+    previewEmoji.style.display = 'none'; removeBtn.style.display = 'inline-flex';
+  } else if (profile.photo) {
+    previewImg.src = profile.photo; previewImg.style.display = 'block';
+    previewEmoji.style.display = 'none'; removeBtn.style.display = 'inline-flex';
+  } else {
+    previewImg.style.display = 'none'; previewEmoji.textContent = profile.avatar;
+    previewEmoji.style.display = 'block'; removeBtn.style.display = 'none';
+  }
+}
+
 document.getElementById('editProfileBtn').addEventListener('click', () => {
+  pendingPhoto = null;
   document.getElementById('editAvatar').value = profile.avatar;
   document.getElementById('editNickname').value = profile.nickname;
   document.getElementById('editQq').value = profile.qq;
   document.getElementById('editMbti').value = profile.mbti;
   document.getElementById('editHobbies').value = Array.isArray(profile.hobbies) ? profile.hobbies.join(', ') : '';
   document.getElementById('editGoal').value = profile.goal;
+  updateAvatarPreview();
   document.getElementById('profileModal').classList.add('show');
 });
 
-function closeProfileModal() { document.getElementById('profileModal').classList.remove('show'); }
+function closeProfileModal() { document.getElementById('profileModal').classList.remove('show'); pendingPhoto = null; }
 document.getElementById('closeProfileModal').addEventListener('click', closeProfileModal);
 document.getElementById('cancelProfileBtn').addEventListener('click', closeProfileModal);
 document.getElementById('profileModal').addEventListener('click', function(e) { if (e.target===this) closeProfileModal(); });
 
+// Photo upload: click button → file dialog
+document.getElementById('uploadPhotoBtn').addEventListener('click', () => {
+  document.getElementById('photoFileInput').click();
+});
+
+// Photo upload: handle file selection
+document.getElementById('photoFileInput').addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { alert('请选择图片文件'); return; }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    // Resize image before storing (max 300px, JPEG quality 0.7)
+    const img = new Image();
+    img.onload = function() {
+      const maxSize = 300;
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > maxSize) { h = h * maxSize / w; w = maxSize; } }
+      else { if (h > maxSize) { w = w * maxSize / h; h = maxSize; } }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      pendingPhoto = canvas.toDataURL('image/jpeg', 0.7);
+      updateAvatarPreview();
+      // Show "has photo" visual feedback
+      document.getElementById('editAvatar').value = profile.avatar || '👤';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+});
+
+// Remove photo
+document.getElementById('removePhotoBtn').addEventListener('click', () => {
+  pendingPhoto = '__REMOVE__'; // signal to remove photo
+  document.getElementById('avatarPreviewImg').style.display = 'none';
+  document.getElementById('avatarPreviewEmoji').style.display = 'block';
+  document.getElementById('avatarPreviewEmoji').textContent = profile.avatar || '👤';
+  document.getElementById('removePhotoBtn').style.display = 'none';
+});
+
 document.getElementById('saveProfileBtn').addEventListener('click', () => {
   profile.avatar = document.getElementById('editAvatar').value || '👤';
+  if (pendingPhoto === '__REMOVE__') { profile.photo = ''; }
+  else if (pendingPhoto) { profile.photo = pendingPhoto; }
   profile.nickname = document.getElementById('editNickname').value || '未命名';
   profile.qq = document.getElementById('editQq').value;
   profile.mbti = document.getElementById('editMbti').value;
   profile.hobbies = document.getElementById('editHobbies').value.split(',').map(s=>s.trim()).filter(Boolean);
   profile.goal = document.getElementById('editGoal').value;
-  storage.set(PROFILE_KEY, profile); renderProfile(); closeProfileModal();
+  storage.set(PROFILE_KEY, profile);
+  pendingPhoto = null;
+  renderProfile(); closeProfileModal();
 });
 
 /* ================================================================
