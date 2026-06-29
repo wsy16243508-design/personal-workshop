@@ -138,13 +138,22 @@ function renderMemos(filter = '', category = 'all') {
       const card = document.createElement('div');
       card.className = 'memo-card';
       card.style.borderLeftColor = m.color || '#4f46e5';
+      const hasReminder = m.reminder && new Date(m.reminder) > new Date();
       card.innerHTML = `
         <div class="memo-card-header">
           <span class="memo-card-category">${m.category || '其他'}</span>
+          ${hasReminder ? '<span class="memo-reminder-badge" title="已设提醒">🔔</span>' : ''}
         </div>
         <div class="memo-card-title">${escapeHtml(m.title) || '无标题'}</div>
         <div class="memo-card-content">${escapeHtml(m.content)}</div>
-        <div class="memo-card-date">${formatDate(m.updatedAt || m.createdAt)}</div>
+        <div class="memo-card-date">
+          ${formatDate(m.updatedAt || m.createdAt)}
+          ${hasReminder ? ' · ⏰ ' + formatDateTime(m.reminder) : ''}
+        </div>
+        ${hasReminder ? `
+          <button class="btn btn-sm btn-calendar" onclick="event.stopPropagation();addToCalendar('${m.id}')">
+            📅 加到日历
+          </button>` : ''}
       `;
       card.addEventListener('click', () => openMemoEditor(m.id));
       grid.appendChild(card);
@@ -164,6 +173,7 @@ function openMemoEditor(id = null) {
     document.getElementById('memoTitle').value = m.title;
     document.getElementById('memoContent').value = m.content;
     document.getElementById('memoCategory').value = m.category || '其他';
+    document.getElementById('memoReminder').value = m.reminder || '';
     memoColor = m.color || '#4f46e5';
     titleEl.textContent = '编辑备忘';
     deleteBtn.style.display = 'inline-block';
@@ -171,6 +181,7 @@ function openMemoEditor(id = null) {
     document.getElementById('memoTitle').value = '';
     document.getElementById('memoContent').value = '';
     document.getElementById('memoCategory').value = '工作';
+    document.getElementById('memoReminder').value = '';
     memoColor = '#4f46e5';
     titleEl.textContent = '新建备忘';
     deleteBtn.style.display = 'none';
@@ -207,6 +218,7 @@ document.getElementById('saveMemoBtn').addEventListener('click', () => {
   const title = document.getElementById('memoTitle').value.trim();
   const content = document.getElementById('memoContent').value.trim();
   const category = document.getElementById('memoCategory').value;
+  const reminder = document.getElementById('memoReminder').value;
   const now = new Date().toISOString();
 
   if (!title && !content) return;
@@ -215,12 +227,12 @@ document.getElementById('saveMemoBtn').addEventListener('click', () => {
     const m = memos.find(x => x.id === editingMemoId);
     if (m) {
       m.title = title; m.content = content; m.category = category;
-      m.color = memoColor; m.updatedAt = now;
+      m.reminder = reminder; m.color = memoColor; m.updatedAt = now;
     }
   } else {
     memos.push({
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      title, content, category, color: memoColor,
+      title, content, category, reminder, color: memoColor,
       createdAt: now, updatedAt: now
     });
   }
@@ -473,6 +485,105 @@ document.getElementById('deleteTransactionBtn').addEventListener('click', () => 
   closeTransactionModal();
   renderAccounting();
 });
+
+/* ========== 日历提醒：生成 .ics 文件并下载 ========== */
+
+function formatDateTime(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function toICSDate(iso) {
+  // iCalendar format: 20260629T143000
+  const d = new Date(iso);
+  const pad = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+}
+
+function addToCalendar(memoId) {
+  const m = memos.find(x => x.id === memoId);
+  if (!m || !m.reminder) return;
+
+  const now = new Date();
+  const uid = memoId + '@personal-space';
+  const dtStart = toICSDate(m.reminder);
+  // 提醒时间往后30分钟作为结束
+  const endDate = new Date(new Date(m.reminder).getTime() + 30 * 60000);
+  const dtEnd = toICSDate(endDate.toISOString());
+  const dtStamp = toICSDate(now.toISOString());
+
+  const title = escapeICS(m.title || '备忘提醒');
+  const desc = escapeICS((m.content || '').replace(/\n/g, '\\n'));
+  const cat = escapeICS(m.category || '');
+
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//个人空间//备忘提醒//ZH',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `UID:${uid}`,
+    `DTSTART:${dtStart}`,
+    `DTEND:${dtEnd}`,
+    `DTSTAMP:${dtStamp}`,
+    `SUMMARY:📝 ${title}`,
+    `DESCRIPTION:${desc}`,
+    `CATEGORIES:${cat}`,
+    'BEGIN:VALARM',
+    'TRIGGER:-PT15M',
+    'ACTION:DISPLAY',
+    `DESCRIPTION:🔔 ${title}`,
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n');
+
+  // 生成文件并触发下载
+  const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (m.title || '备忘提醒').replace(/[^\\u4e00-\\u9fa5\\w]/g, '_') + '.ics';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  // iOS 提示
+  if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
+    showToast('✅ 已下载日历文件\n点击文件 → 添加到日历 → 到时间 iPhone 会自动弹通知');
+  } else {
+    showToast('✅ 日历文件已下载，双击打开即可添加到系统日历');
+  }
+}
+
+function escapeICS(str) {
+  return str.replace(/[\\;,]/g, '\\$&').substring(0, 500);
+}
+
+function showToast(msg) {
+  const existing = document.querySelector('.toast-msg');
+  if (existing) existing.remove();
+  const toast = document.createElement('div');
+  toast.className = 'toast-msg';
+  toast.style.cssText = `
+    position:fixed;bottom:30px;left:50%;transform:translateX(-50%);
+    background:#1f2937;color:#fff;padding:14px 24px;border-radius:12px;
+    font-size:14px;z-index:9999;text-align:center;max-width:90vw;
+    box-shadow:0 8px 30px rgba(0,0,0,.25);white-space:pre-line;
+    animation:toastIn .3s ease;
+  `;
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity .3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
 
 /* ========== 工具函数 ========== */
 function escapeHtml(str) {
