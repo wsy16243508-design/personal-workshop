@@ -24,7 +24,9 @@
       <div class="avatar avatar-sm" id="headerAvatar">👤</div>
       <span class="header-title" id="headerTitle">个人空间</span>
     </div>
-    <button class="theme-btn" id="themeBtn" title="切换日间/夜间模式" aria-label="切换日间夜间模式">🌙</button>
+    <button class="theme-btn" id="themeBtn" title="切换日间/夜间模式" aria-label="切换日间夜间模式">
+      <svg id="themeIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
   </header>
 
   <!-- ====== 主内容区 ====== -->
@@ -175,16 +177,19 @@
 
   </main>
 
-  <!-- ====== 底部导航栏 ⇢ 记事 | 记账 | 资料 ====== -->
+  <!-- ====== 底部导航栏 — SVG 纯色图标 ====== -->
   <nav class="bottom-tabs" id="bottomTabs">
     <button class="bottom-tab active" data-tab="memo">
-      <span class="bt-icon">📝</span><span class="bt-label">记事</span>
+      <span class="bt-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></span>
+      <span class="bt-label">记事</span>
     </button>
     <button class="bottom-tab" data-tab="accounting">
-      <span class="bt-icon">💰</span><span class="bt-label">记账</span>
+      <span class="bt-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span>
+      <span class="bt-label">记账</span>
     </button>
     <button class="bottom-tab" data-tab="profile">
-      <span class="bt-icon">👤</span><span class="bt-label">资料</span>
+      <span class="bt-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+      <span class="bt-label">资料</span>
     </button>
   </nav>
 
